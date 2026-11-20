@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="docx-page-size" content="A4">
+<title>Snowlio Uncia 雪豹码 · 企业产品一物一码追溯编码规范</title>
+
+<style>
+:root {
+
+    --typography-fontFamily-heading: "微软雅黑", "Microsoft YaHei", sans-serif;
+    --typography-fontFamily-body: "微软雅黑", "Microsoft YaHei", sans-serif;
+    --typography-fontFamily-mono: "Consolas", monospace;
+    --typography-fontSize-coverTitle: 26pt;
+    --typography-fontSize-coverCategory: 13pt;
+    --typography-fontSize-h1: 16pt;
+    --typography-fontSize-h2: 14pt;
+    --typography-fontSize-h3: 12.5pt;
+    --typography-fontSize-body: 12pt;
+    --typography-fontSize-small: 10.5pt;
+    --typography-lineHeight-body: 1.6;
+    --typography-lineHeight-heading: 1.3;
+    --typography-fontWeight-bold: 700;
+    --typography-fontWeight-normal: 400;
+    --color-primary: #1565C0;
+    --color-secondary: #0288D1;
+    --color-accent: #00897B;
+    --color-text: #212121;
+    --color-textSecondary: #616161;
+    --color-heading: #1A237E;
+    --color-divider: #E0E0E0;
+    --color-background: #FFFFFF;
+    --color-surface: #F5F7FA;
+    --color-callout-bg: #EEF4FB;
+    --fs-cover-title: var(--typography-fontSize-coverTitle);
+    --fs-h1: var(--typography-fontSize-h1);
+    --fs-h2: var(--typography-fontSize-h2);
+    --fs-h3: var(--typography-fontSize-h3);
+    --fs-body: var(--typography-fontSize-body);
+    --fs-small: var(--typography-fontSize-small);
+    --ff-heading: var(--typography-fontFamily-heading);
+    --ff-body: var(--typography-fontFamily-body);
+    --ff-mono: var(--typography-fontFamily-mono);
+    --lh-body: var(--typography-lineHeight-body);
+    --fw-bold: var(--typography-fontWeight-bold);
+    --fw-normal: var(--typography-fontWeight-normal);
+    --spacing-paragraph: 0.6em;
+    --spacing-section: 1.6em;
+    --margin-page: var(--layout-margin, 2.5cm);
+    --page-content-width: var(--layout-contentWidth, 16cm);
+    --fs-tiny: 9pt;
+    --color-on-primary: #FFFFFF;
+
+}
+@page { margin: 2.3cm 2.5cm 2.2cm 2.5cm; @bottom-center { content: "第 " counter(page) " 页"; font-size: var(--fs-tiny); color: var(--color-textSecondary); } }
+@page cover { @bottom-center { content: none; } }
+section[role="cover"] { page: cover; }
+body { max-width: var(--page-content-width); margin-left: auto; margin-right: auto;
+       font-family: var(--ff-body); font-size: var(--fs-body); color: var(--color-text);
+       line-height: var(--lh-body); }
+body p { text-align: justify; text-indent: 2em; font-family: var(--ff-body); font-size: var(--fs-body);
+         line-height: var(--lh-body); margin: var(--spacing-paragraph) 0; color: var(--color-text); }
+h1 { font-family: var(--ff-heading); font-size: var(--fs-h1); color: var(--color-heading);
+     font-weight: var(--fw-bold); line-height: var(--typography-lineHeight-heading);
+     margin: var(--spacing-section) 0 0.7em 0; text-align: left; text-indent: 0;
+     border-bottom: 2px solid var(--color-primary); padding-bottom: 0.3em; }
+h2 { font-family: var(--ff-heading); font-size: var(--fs-h2); color: var(--color-primary);
+     font-weight: var(--fw-bold); line-height: var(--typography-lineHeight-heading);
+     margin: 1.4em 0 0.5em 0; text-align: left; text-indent: 0; }
+h3 { font-family: var(--ff-heading); font-size: var(--fs-h3); color: var(--color-secondary);
+     font-weight: var(--fw-bold); margin: 1em 0 0.4em 0; text-align: left; text-indent: 0; }
+ul, ol { margin: 0.5em 0 0.8em 2em; padding: 0; }
+li { font-family: var(--ff-body); font-size: var(--fs-body); line-height: var(--lh-body);
+     margin: 0.25em 0; text-align: justify; }
+table { border-collapse: collapse; width: 100%; margin: 0.8em 0 1.2em 0; font-family: var(--ff-body); font-size: var(--fs-small); }
+caption { font-family: var(--ff-heading); font-size: var(--fs-small); font-weight: var(--fw-bold);
+          color: var(--color-heading); text-align: center; margin-bottom: 0.4em; }
+th { background: var(--color-primary); color: var(--color-on-primary); font-weight: var(--fw-bold);
+     padding: 7px 9px; border: 0.5px solid var(--color-primary); text-align: left; font-size: var(--fs-small); }
+td { padding: 6px 9px; border: 0.5px solid var(--color-divider); vertical-align: top;
+     text-align: left; font-size: var(--fs-small); line-height: 1.45; }
+tbody tr:nth-child(even) td { background: var(--color-surface); }
+code { font-family: var(--ff-mono); font-size: var(--fs-small); background: var(--color-surface);
+       padding: 0 3px; color: var(--color-accent); }
+.cover-kicker { font-family: var(--ff-heading); font-size: var(--typography-fontSize-coverCategory);
+                color: var(--color-secondary); text-align: center; text-indent: 0; letter-spacing: 3px;
+                margin-top: 3.5cm; }
+.cover-brand { font-family: var(--ff-heading); font-size: var(--fs-h2); font-weight: var(--fw-bold);
+               color: var(--color-heading); text-align: center; text-indent: 0; margin: 1cm 0 0 0;
+               letter-spacing: 1px; }
+.cover-brand span { font-size: var(--fs-body); font-weight: var(--fw-normal); color: var(--color-textSecondary); letter-spacing: 0; }
+.cover-title { font-family: var(--ff-heading); font-size: var(--fs-cover-title); color: var(--color-heading);
+               font-weight: var(--fw-bold); text-align: center; text-indent: 0; line-height: 1.4;
+               margin: 1.2cm 0 0.6cm 0; }
+.cover-sub { font-family: var(--ff-body); font-size: var(--fs-h2); color: var(--color-textSecondary);
+             text-align: center; text-indent: 0; margin: 0.3em 0; }
+.cover-meta { font-family: var(--ff-body); font-size: var(--fs-body); color: var(--color-textSecondary);
+              text-align: center; text-indent: 0; margin-top: 2.5cm; }
+.toc-title { font-family: var(--ff-heading); font-size: var(--fs-h1); font-weight: var(--fw-bold);
+             color: var(--color-heading); text-align: center; text-indent: 0;
+             margin: 0.6cm 0 1cm 0; }
+.toc-list, .toc-list ol, .toc-list ul { list-style: none; }
+.toc-list { margin: 0; padding: 0; }
+.toc-list > li { font-family: var(--ff-heading); font-size: var(--fs-h3); font-weight: var(--fw-bold);
+                 color: var(--color-heading); margin: 0.55em 0 0.2em 0; }
+.toc-list ol { margin: 0 0 0 1.2em; padding: 0; }
+.toc-list ol li { font-family: var(--ff-body); font-size: var(--fs-body); color: var(--color-textSecondary);
+                  margin: 0.18em 0; }
+.toc-list a { color: inherit; text-decoration: none; }
+.callout-note { border-left: 3px solid var(--color-accent); background: var(--color-callout-bg);
+                padding: 8px 12px; margin: 1em 0; text-indent: 0; font-size: var(--fs-body); }
+.foot-note { font-size: var(--fs-small); color: var(--color-textSecondary); text-indent: 0;
+             text-align: center; margin-top: 2em; }
+.executive-summary { border-collapse: collapse; width: 100%; margin: 0.4em 0 1.6em 0; }
+.executive-summary td { background: var(--color-callout-bg); border: 0.5px solid var(--color-divider);
+                        padding: 14px 18px; text-align: left; }
+.es-title { font-family: var(--ff-heading); font-size: var(--fs-h2); font-weight: var(--fw-bold);
+            color: var(--color-heading); text-indent: 0; text-align: left; margin: 0 0 0.5em 0; }
+.es-body { font-family: var(--ff-body); font-size: var(--fs-body); line-height: var(--lh-body);
+           text-indent: 0; text-align: justify; color: var(--color-text); margin: 0.3em 0; }
+</style>
+
+</head>
+<body>
+<section role="cover">
+  <p class="cover-kicker">SNOWLIO UNCIA · 雪豹码 · UNC</p>
+  <p class="cover-brand">Snowlio Suite 雪豹云追溯平台家族<span> / 一物一码生成系统</span></p>
+  <p class="cover-title">企业产品一物一码追溯编码规范</p>
+  <p class="cover-sub">通用版 · 覆盖食品 / 药品 / 3C / 化妆品 / 服装鞋帽等行业</p>
+  <p class="cover-sub">以单品级（L2）追溯为主线</p>
+  <p class="cover-meta">文件类别：技术规范 &nbsp;|&nbsp; 版本：V1.1</p>
+  <p class="cover-meta">适用对象：IT / 质量 / 供应链 / 合规部门</p>
+  <p class="cover-meta">编制日期：2026 年 11 月</p>
+</section>
+<section role="cover">
+<nav class="doc-toc" aria-label="文档目录">
+  <p class="toc-title">目 录</p>
+  <ol class="toc-list">
+    <li><a href="#section-1">一、总则</a>
+      <ol>
+        <li><a href="#section-1">1.1 编制目的</a></li>
+        <li><a href="#section-1">1.2 适用范围</a></li>
+        <li><a href="#section-1">1.3 编制原则</a></li>
+      </ol>
+    </li>
+    <li><a href="#section-2">二、规范性引用文件</a>
+    </li>
+    <li><a href="#section-3">三、术语和定义</a>
+    </li>
+    <li><a href="#section-4">四、编码体系总体架构</a>
+      <ol>
+        <li><a href="#section-4">4.1 三层编码</a></li>
+        <li><a href="#section-4">4.2 两类用途</a></li>
+      </ol>
+    </li>
+    <li><a href="#section-5">五、产品族码（SKU）编码规则</a>
+      <ol>
+        <li><a href="#section-5">5.1 编码结构</a></li>
+        <li><a href="#section-5">5.2 各段定义</a></li>
+        <li><a href="#section-5">5.3 属性字典</a></li>
+        <li><a href="#section-5">5.4 字符集与分隔符</a></li>
+      </ol>
+    </li>
+    <li><a href="#section-6">六、单品码（UIN）编码规则</a>
+      <ol>
+        <li><a href="#section-6">6.1 设计原则</a></li>
+        <li><a href="#section-6">6.2 双码并行方案</a></li>
+        <li><a href="#section-6">6.3 方案对比与选择</a></li>
+        <li><a href="#section-6">6.4 赋码与绑定</a></li>
+      </ol>
+    </li>
+    <li><a href="#section-7">七、包装层级与父子关联规则</a>
+      <ol>
+        <li><a href="#section-7">7.1 层级模型</a></li>
+        <li><a href="#section-7">7.2 父子关联规则</a></li>
+        <li><a href="#section-7">7.3 精准召回</a></li>
+      </ol>
+    </li>
+    <li><a href="#section-8">八、追溯载体与二维码规范</a>
+      <ol>
+        <li><a href="#section-8">8.1 载体形态</a></li>
+        <li><a href="#section-8">8.2 印刷与质量要求</a></li>
+        <li><a href="#section-8">8.3 加密与密钥管理</a></li>
+      </ol>
+    </li>
+    <li><a href="#section-9">九、全流程数据采集节点规范</a>
+      <ol>
+        <li><a href="#section-9">9.1 采集节点</a></li>
+        <li><a href="#section-9">9.2 采集字段</a></li>
+        <li><a href="#section-9">9.3 正向查询与反向召回</a></li>
+      </ol>
+    </li>
+    <li><a href="#section-10">十、防伪与防窜货机制</a>
+      <ol>
+        <li><a href="#section-10">10.1 防伪机制</a></li>
+        <li><a href="#section-10">10.2 防窜货机制</a></li>
+        <li><a href="#section-10">10.3 异常监控</a></li>
+      </ol>
+    </li>
+    <li><a href="#section-11">十一、追溯深度分级与行业适配</a>
+      <ol>
+        <li><a href="#section-11">11.1 追溯深度分级</a></li>
+        <li><a href="#section-11">11.2 行业适配</a></li>
+      </ol>
+    </li>
+    <li><a href="#section-12">十二、数据字典</a>
+    </li>
+    <li><a href="#section-13">十三、实施与落地</a>
+      <ol>
+        <li><a href="#section-13">13.1 实施步骤</a></li>
+        <li><a href="#section-13">13.2 关键成败点</a></li>
+        <li><a href="#section-13">13.3 治理规则</a></li>
+      </ol>
+    </li>
+    <li><a href="#section-14">附录A 编码示例详解</a>
+    </li>
+    <li><a href="#section-15">附录B 国内外标准对接</a>
+    </li>
+  </ol>
+</nav>
+</section>
+<section role="body" data-page-restart="1">
+
+<table class="executive-summary"><tbody><tr><td>
+<p class="es-title">执行摘要</p>
+<p class="es-body">在手工编码时代，为便于记忆与分类，编码往往把品类、属性、序号等信息全部塞进一段定长字符串里。这类编码本质上是“分类码”，它回答的是“这是什么产品”，适合配料、统计与检索，却无法支撑“这是哪一件、经过谁的手、现在在哪”这样的追溯诉求。当企业推进一物一码追溯管理时，编码的角色必须从静态身份证升级为动态履历载体，设计重心随之重构。</p>
+<p class="es-body">本规范提出“三层编码、两类用途”的通用框架：产品族码（SKU）作为后台主数据标识产品种类；单品码（UIN）作为核心，为每件产品赋予全局唯一、终身不变、不可推测的身份；追溯载体（明码 + 加密二维码或 RFID）将身份固化到实物上。三层之间经赋码与加密贯通，形成可采集、可验证的完整链路。</p>
+<p class="es-body">规范同时给出产品族码七段结构、单品码双码并行方案、包装层级父子关联模型、全流程六大采集节点、防伪防窜货机制、追溯深度分级、行业适配建议、数据字典与落地步骤。企业实施时应以“通用框架 + 自有字典”方式落地：分类树与属性字典按行业定制，编码规则与关联逻辑跨企业复用。</p>
+</td></tr></tbody></table>
+<p class="callout-note">本规范为 <strong>Snowlio Suite 雪豹云追溯平台家族</strong> 中 <strong>Snowlio Uncia（中文名：雪豹码，简称 UNC）</strong> 一物一码生成系统的配套技术规范。Snowlio Suite 包含：Snowlio Trace（雪豹云追溯平台，负责全链路采集与查询）、Snowlio Uncia（雪豹码，负责编码生成与赋码引擎）、Snowlio UDI（UDI/GS1 合规模组）、Snowlio Tag（码图与标签打印）。本规范所定义的编码规则，是 Snowlio Uncia 生码引擎与 Snowlio Trace 追溯查询之间一致性的基础。</p>
+<h1 id="section-1">一、总则</h1>
+<h2>1.1 编制目的</h2>
+<p>为统一企业产品在生产、仓储、物流、渠道与售后各环节的身份标识与数据采集规则，建立"一物一码、码随物走、全程可溯"的追溯体系，特制定本规范。本规范旨在解决三个核心问题：这是什么产品（产品族识别）、这是哪一件（单品唯一身份）、它去过哪里（全流程履历）。</p>
+<p>本规范所描述的编码体系是一个"框架 + 字典"结构：分类骨架与编码规则在企业间通用，各企业只需维护自己的分类树与属性字典即可落地。它既适用于追溯深度较低的成本敏感型品类，也适用于药品、母婴等高合规要求品类。</p>
+<h2>1.2 适用范围</h2>
+<p>本规范适用于企业对其生产或销售的实物产品实施一物一码追溯管理，覆盖从原料入库、生产赋码、包装关联、仓储物流、渠道分销到消费者验真与售后召回的全生命周期。软件、服务类无形产品不适用本规范。</p>
+<h2>1.3 编制原则</h2>
+<ul><li><strong>唯一性</strong>：每一个最小销售单元拥有全局唯一、不可复用的身份码。</li><li><strong>稳定性</strong>：码一经赋定，终身绑定该产品单元，不因流转、改包装而变更。</li><li><strong>安全性</strong>：码序不可推测、暗码加密，防止批量克隆与伪造。</li><li><strong>可采集性</strong>：编码可被条码、二维码或射频标签稳定承载，便于机器自动采集。</li><li><strong>可扩展性</strong>：分类与属性采用字典驱动，新增品类或属性不改动编码结构。</li><li><strong>合规性</strong>：预留与 GS1、国家药品追溯码等标准的映射字段，避免合规返工。</li></ul>
+<h1 id="section-2">二、规范性引用文件</h1>
+<p>下列文件中的条款通过本规范的引用而成为本规范的条款：</p>
+<ul><li>GB/T 34056——消费品质量安全信息追溯 编码与标识要求</li><li>GB 12904——商品条码 零售商品编码与条码表示</li><li>GS1 General Specifications——全球贸易项目代码（GTIN）、系列货运包装箱代码（SSCC）、全球位置码（GLN）</li><li>国家药品监督管理局药品追溯码编码要求（适用于药品、医疗器械行业）</li></ul>
+<h1 id="section-3">三、术语和定义</h1>
+<table><thead><tr><th>术语</th><th>英文/缩写</th><th>定义</th></tr></thead><tbody><tr><td>产品族码</td><td>SKU</td><td>标识"是什么产品"的主数据编码，同类产品共用一个码，长期稳定</td></tr><tr><td>单品码</td><td>UIN</td><td>Unique Item Number，标识"是哪一件"的唯一身份码，一件一码、终身不变</td></tr><tr><td>批次码</td><td>LOT</td><td>标识同一生产批次的编码，用于批次级追溯与召回</td></tr><tr><td>物流单元码</td><td>SSCC</td><td>标识托盘、整箱等物流单元的编码，用于仓储与运输环节</td></tr><tr><td>赋码</td><td>Code Assignment</td><td>将唯一身份码生成并加载（喷印、贴标、写入芯片）到产品上的过程</td></tr><tr><td>父子关联</td><td>Parent-Child Mapping</td><td>上级包装码与下级包装码之间的包含关系映射</td></tr><tr><td>正向追溯</td><td>Forward Traceability</td><td>从原料、生产到成品、渠道的方向查询产品流向</td></tr><tr><td>反向召回</td><td>Recall</td><td>从问题单品反向定位其所属批次、去向与责任主体</td></tr><tr><td>防窜货</td><td>Anti-Diversion</td><td>通过扫码地理位置与授权销售区域比对，识别跨区销售</td></tr></tbody></table>
+<h1 id="section-4">四、编码体系总体架构</h1>
+<p>本规范采用"三层编码、两类用途"的总体架构。</p>
+<h2>4.1 三层编码</h2>
+<p>第一层为<strong>产品族码（SKU）</strong>，标识产品种类，属于后台静态主数据，由企业前缀、三级分类、属性段、版本与校验位构成，长期稳定不变。</p>
+<p>第二层为<strong>单品码（UIN）</strong>，标识具体单件产品，是本体系的核心。它由产品族码与生产动态信息（日期、工厂、序列）通过赋码规则生成，全局唯一、终身绑定、不可复用。</p>
+<p>第三层为<strong>追溯载体</strong>，即承载单品码的物理介质，包括人眼可读的明码、机器可扫的加密二维码，或射频识别（RFID）标签。载体印刷或贴附于每件产品及其包装上。</p>
+<p>三层之间的关系为：静态主数据加动态生产信息，经赋码生成唯一 UIN，再经加密形成可采集的载体，最终实现全链路可采集、可验证。</p>
+<h2>4.2 两类用途</h2>
+<p>编码按用途分为主数据码与实例码两类。<strong>主数据码</strong>回答"是什么产品"，稳定存于 ERP 与商品主数据系统；<strong>实例码</strong>回答"是哪一件、哪一批"，由主数据码追加批次与序列号构成，用于仓储、溯源与售后。两者共用同一套编码规则，仅粒度不同。</p>
+<p>这一分离至关重要：更换包装或供应商不影响主数据码，而实例码能精确定位到具体单品与批次，满足溯源与精准召回需求。</p>
+<h1 id="section-5">五、产品族码（SKU）编码规则</h1>
+<h2>5.1 编码结构</h2>
+<p>产品族码由七段构成，段间以连字符"-"分隔：</p>
+<p><code>企业前缀-大类-中类-小类-属性段-版本-校验位</code></p>
+<p>示例：<code>HY-03-01-002-C:RD|S:XL|M:COT-V1-K</code></p>
+<h2>5.2 各段定义</h2>
+<table><thead><tr><th>段序</th><th>段名</th><th>长度</th><th>字符集</th><th>说明</th></tr></thead><tbody><tr><td>1</td><td>企业前缀</td><td>2–4 位</td><td>大写字母</td><td>标识企业或品牌，集团多品牌可分别设前缀</td></tr><tr><td>2</td><td>大类</td><td>2 位</td><td>数字</td><td>一级品类，如 03 表示服饰</td></tr><tr><td>3</td><td>中类</td><td>2 位</td><td>数字</td><td>二级品类，如 01 表示上衣</td></tr><tr><td>4</td><td>小类</td><td>3 位</td><td>数字</td><td>具体品项，支持 999 个细分</td></tr><tr><td>5</td><td>属性段</td><td>变长</td><td>键:值，管道符分隔</td><td>颜色、尺码、材质等，按需增删</td></tr><tr><td>6</td><td>版本</td><td>2 位</td><td>V+数字</td><td>设计迭代，如 V1、V2</td></tr><tr><td>7</td><td>校验位</td><td>1 位</td><td>字母数字</td><td>防录入错误，采用 Mod-37 算法</td></tr></tbody></table>
+<h2>5.3 属性字典</h2>
+<p>属性采用"单字母键 + 受控值表"方式，键固定、值可无限扩展，企业按需取用。属性值必须来自字典，禁止自由文本录入。</p>
+<table><thead><tr><th>键</th><th>含义</th><th>常用值示例</th></tr></thead><tbody><tr><td>C</td><td>颜色</td><td>RD 红、BK 黑、WH 白、BL 蓝</td></tr><tr><td>S</td><td>规格/尺寸</td><td>S、M、L、XL、500G、M8、12MM</td></tr><tr><td>M</td><td>材质</td><td>COT 棉、STL 钢、ABS、304 不锈钢</td></tr><tr><td>V</td><td>电压/容量</td><td>220V、12V、500ML</td></tr><tr><td>P</td><td>包装/保质期</td><td>BX 盒、CS 箱、12M（12 个月）</td></tr><tr><td>T</td><td>型号/技术参数</td><td>IP54、5G、8CORE、NRM（常温）</td></tr></tbody></table>
+<p>新增属性（如环保等级 E）只需在字典中增加一行，编码结构不变。属性按键名字母升序排列，确保同一产品唯一编码。</p>
+<h2>5.4 字符集与分隔符</h2>
+<ul><li>字符集仅使用大写字母与数字，字母中剔除 I、O，避免与 1、0 混淆。</li><li>三级分隔符：连字符"-"分段，管道符"|"分属性，冒号":"连接键值，解析无歧义。</li><li>编码总长度建议不超过 40 位，超出会影响条码密度与扫码体验。</li></ul>
+<h1 id="section-6">六、单品码（UIN）编码规则</h1>
+<h2>6.1 设计原则</h2>
+<p>单品码是一物一码的基石，必须满足四条硬约束：全局唯一、终身不变、不可推测、全程可采集。其中"不可推测"最易被忽视——若采用 <code>HY260915000001</code>、<code>HY260915000002</code> 这类连续流水号，造假者扫描少量产品即可推算编码规则，进而批量克隆。因此流水段必须随机化或整体加密。</p>
+<h2>6.2 双码并行方案</h2>
+<p>本规范推荐"明码 + 暗码"双码并行方案，兼顾人工核对与防伪要求。</p>
+<p><strong>明码（半结构化）</strong>：供人工识读、客服核对与手工录入使用，共 17 位，结构为：</p>
+<p><code>企业码(2) + 生产日期(6) + 工厂线别(2) + 随机序列(6) + 校验位(1)</code></p>
+<p>示例：<code>HY260915A1X7K2M9C</code></p>
+<p>其中生产日期采用 YYMMDD 格式；工厂线别由企业内部编码；随机序列以安全随机数生成，不按生产顺序递增；校验位采用 Mod-37 算法计算。</p>
+<p><strong>暗码（加密二维码）</strong>：供机器扫描与消费者验真使用，二维码内容为加密字符串，明文包含完整 UIN、防伪校验值与时间戳，经对称加密后生成。加密密钥由企业密钥管理系统统一管理，定期轮换。暗码不可被肉眼直接解读，也无法从外观推算相邻产品的码值。</p>
+<h2>6.3 方案对比与选择</h2>
+<table><thead><tr><th>方案</th><th>码的结构</th><th>优点</th><th>风险/适用</th></tr></thead><tbody><tr><td>A 结构化码</td><td>企业码+日期+工厂+流水+校验</td><td>离线可读部分信息</td><td>流水连续易被推测，适用于低风险品类</td></tr><tr><td>B 纯随机码</td><td>随机序列，信息全在后台</td><td>最难伪造、无法推测</td><td>依赖网络查询，适用于高防伪品类</td></tr><tr><td>C 双码并行</td><td>明码半结构化 + 加密二维码</td><td>兼顾人工核对与防伪</td><td>推荐，为主流做法</td></tr></tbody></table>
+<p>企业应根据产品风险等级与扫码环境选择方案。生产环境网络条件良好、防伪要求高的，优先选方案 C；离线扫码场景多、防伪要求一般的，可选方案 A 但须对流水段做随机化处理。</p>
+<h2>6.4 赋码与绑定</h2>
+<p>赋码发生在成品生产完成、进入包装前。系统按规则批量生成 UIN 并写入码库，状态置为"已生成未绑定"；喷码或贴标设备将码加载至产品后，状态更新为"已赋码"；装箱扫描时完成父子关联，状态更新为"已关联"。码库应记录每个 UIN 的完整状态流转日志。</p>
+<h1 id="section-7">七、包装层级与父子关联规则</h1>
+<h2>7.1 层级模型</h2>
+<p>追溯的难点不在码本身，而在码与货的绑定关系。产品包装通常分为单品、盒/中包、箱、托盘四级，必须逐级建立父子映射：</p>
+<ul><li>单品码（UIN）：最小销售单元，是追溯的最小粒度。</li><li>箱码（CASE）：标识一个装箱单元，关联其所含的 N 个单品码。</li><li>托盘码（SSCC）：标识一个物流单元，关联其所含的若干箱码。</li></ul>
+<h2>7.2 父子关联规则</h2>
+<ol><li>装箱时必须逐一扫描每个单品码，系统记录"箱码 → 单品码列表"的包含关系。</li><li>组托时扫描各箱码，系统记录"托盘码 → 箱码列表"的包含关系。</li><li>任一层级的码均可通过父子映射向上定位所属批次、向下展开全部下级单品。</li><li>关联关系一经建立不得随意修改；确需调整的，须记录变更原因、操作人与时间。</li><li>装箱环节必须设置重扫校验与漏扫拦截：扫描数量与装箱单不符时，系统禁止封箱并告警。</li></ol>
+<h2>7.3 精准召回</h2>
+<p>发生质量问题需召回时，只需输入问题批次或若干问题单品码，系统即可沿父子映射自动展开该批次下全部受影响单品及其当前流向（经销商、门店、区域），实现定向召回，避免扩大召回范围造成不必要损失。这是父子关联最核心的业务价值。</p>
+<h1 id="section-8">八、追溯载体与二维码规范</h1>
+<h2>8.1 载体形态</h2>
+<ul><li><strong>一维条码</strong>：承载明码，用于仓储、收银等高速扫描场景。</li><li><strong>二维码</strong>：承载暗码，用于消费者验真、溯源查询与防伪校验，建议使用 QR Code 或 DM 码。</li><li><strong>RFID 标签</strong>：用于整箱、整托等非接触批量采集场景，标签内写入 SSCC 与箱码。</li></ul>
+<h2>8.2 印刷与质量要求</h2>
+<ul><li>明码应清晰可读，字符高度不小于 2.5 毫米，印刷对比度满足扫码要求。</li><li>二维码尺寸应根据印刷介质与扫码距离确定，最小模块宽度不低于 0.33 毫米。</li><li>载体应避开产品包装的折痕、接缝与反光区域，防止扫码失败。</li><li>印刷后须进行首件检验与在线抽检，扫码识别率应达到 99.5% 以上。</li></ul>
+<h2>8.3 加密与密钥管理</h2>
+<p>暗码加密采用对称加密算法，密钥由企业密钥管理系统集中管理，按季度或按批次轮换。加密明文至少包含 UIN、防伪校验值与生成时间戳。消费者扫码时，系统解密后校验码值有效性、查询次数与地理位置，返回验真结果与追溯信息。</p>
+<h1 id="section-9">九、全流程数据采集节点规范</h1>
+<h2>9.1 采集节点</h2>
+<p>全链路设置六大关键采集节点，每个节点扫码即写入一条追溯记录：</p>
+<table><thead><tr><th>节点</th><th>采集内容</th><th>业务目的</th></tr></thead><tbody><tr><td>原料生产</td><td>原料批次、供应商、工艺参数</td><td>建立生产履历起点</td></tr><tr><td>赋码关联</td><td>UIN 与产品绑定关系</td><td>确立单品身份</td></tr><tr><td>入库出库</td><td>箱码、托盘码、仓库、时间</td><td>库存与流向管理</td></tr><tr><td>渠道配送</td><td>经销商、收货地址、物流单号</td><td>流向追踪与防窜货</td></tr><tr><td>终端销售</td><td>门店、零售扫码</td><td>末端流向确认</td></tr><tr><td>消费者售后</td><td>验真扫码、售后工单、召回登记</td><td>验真、售后与召回</td></tr></tbody></table>
+<h2>9.2 采集字段</h2>
+<p>每次扫码采集须至少包含以下字段：码值、采集时间、采集地点（GPS 或设施编码）、操作人（账号）、操作设备编号、动作类型（入库/出库/销售/验真等）、上下游关联码。所有记录写入不可篡改的追溯数据库，保留期限不低于产品保质期届满后两年。</p>
+<h2>9.3 正向查询与反向召回</h2>
+<p>正向查询按单品码可查到从原料到终端的完整履历；反向召回按批次或单品码可定位受影响范围与当前去向。两类查询均应支持在秒级内返回结果。</p>
+<h1 id="section-10">十、防伪与防窜货机制</h1>
+<h2>10.1 防伪机制</h2>
+<table><thead><tr><th>风险</th><th>应对机制</th></tr></thead><tbody><tr><td>码被克隆复制</td><td>暗码加密，一码一验，同一码被多地高频扫描时触发异常告警</td></tr><tr><td>码序被批量推测</td><td>流水段随机化，码序不连续、不含规律</td></tr><tr><td>内部人员造假</td><td>扫码日志全程留痕，谁在何时何地扫码不可抵赖</td></tr><tr><td>二维码被替换</td><td>一物一码与包装序列号绑定，验真时校验一致性</td></tr></tbody></table>
+<h2>10.2 防窜货机制</h2>
+<p>消费者或渠道扫码时，系统记录扫码地理位置，与该码授权销售区域进行比对。若扫码位置长期偏离授权区域，系统自动标记为疑似窜货并生成预警。企业可据此核查经销商流向，维护渠道秩序。</p>
+<h2>10.3 异常监控</h2>
+<p>系统应建立扫码行为分析模型，监测以下异常：同一码短时间内多次扫描、同一设备扫描大量不同码、扫码地理分布异常集中或分散、非工作时段批量扫码。异常触发后自动冻结相关码并通知风控人员核查。</p>
+<h1 id="section-11">十一、追溯深度分级与行业适配</h1>
+<h2>11.1 追溯深度分级</h2>
+<p>企业应根据产品风险、合规要求与成本预算选择合适的追溯深度：</p>
+<table><thead><tr><th>级别</th><th>粒度</th><th>说明</th><th>适用</th></tr></thead><tbody><tr><td>L1 批次级</td><td>批次</td><td>同批次产品共用一个批号，只追到批次</td><td>成本敏感、低风险品类</td></tr><tr><td>L2 单品级</td><td>单品</td><td>每件产品唯一码，主流方案</td><td>食品、化妆品、3C</td></tr><tr><td>L3 全链路</td><td>单品+原料+工艺+渠道+消费者</td><td>最完整，含工艺参数与消费者数据</td><td>药品、母婴、高价值品</td></tr></tbody></table>
+<h2>11.2 行业适配</h2>
+<ul><li><strong>食品饮料</strong>：对齐 GB/T 34056，重点管理批次、保质期、冷链温度与召回，追溯深度以 L2 为主。</li><li><strong>药品/医疗器械</strong>：强制对齐国家药监 20 位追溯码，追溯深度 L3，数据须上传国家追溯系统。</li><li><strong>3C/电子制造</strong>：重点在序列号、保修期与售后溯源，追溯深度 L2，常与售后系统打通。</li><li><strong>化妆品</strong>：重点在防伪与防窜货，追溯深度 L2，消费者扫码验真为主要触点。</li></ul>
+<h1 id="section-12">十二、数据字典</h1>
+<p>追溯系统的核心数据表字段定义如下：</p>
+<table><thead><tr><th>字段名</th><th>类型</th><th>长度</th><th>说明</th></tr></thead><tbody><tr><td>UIN</td><td>字符串</td><td>17–20</td><td>单品唯一码，主键</td></tr><tr><td>SKU</td><td>字符串</td><td>≤40</td><td>产品族码，外键关联产品主数据</td></tr><tr><td>LOT</td><td>字符串</td><td>12</td><td>生产批次码</td></tr><tr><td>PARENT_CODE</td><td>字符串</td><td>20</td><td>上级包装码，顶层为空</td></tr><tr><td>PACK_LEVEL</td><td>枚举</td><td>—</td><td>包装层级：单品/盒/箱/托盘</td></tr><tr><td>STATUS</td><td>枚举</td><td>—</td><td>码状态：已生成/已赋码/已关联/已销售/已核销</td></tr><tr><td>PROD_DATE</td><td>日期</td><td>8</td><td>生产日期，YYYYMMDD</td></tr><tr><td>FACTORY</td><td>字符串</td><td>2</td><td>工厂线别编码</td></tr><tr><td>LOCATION</td><td>字符串</td><td>20</td><td>采集地点，GPS 坐标或设施编码</td></tr><tr><td>OPERATOR</td><td>字符串</td><td>20</td><td>操作人账号</td></tr><tr><td>ACTION</td><td>枚举</td><td>—</td><td>动作类型：入库/出库/销售/验真/召回</td></tr><tr><td>SCAN_TIME</td><td>时间戳</td><td>—</td><td>采集时间，精确到秒</td></tr><tr><td>ENCRYPTED_CODE</td><td>字符串</td><td>变长</td><td>暗码加密串</td></tr></tbody></table>
+<h1 id="section-13">十三、实施与落地</h1>
+<h2>13.1 实施步骤</h2>
+<ol><li><strong>确定范围</strong>：明确追溯深度与合规要求，梳理需纳入追溯的产品线。</li><li><strong>建立字典</strong>：构建三级分类树与属性字典，确定各品类所需属性及允许值。</li><li><strong>设计编码</strong>：确定 UIN 结构、加密算法、校验方式与版本升位策略。</li><li><strong>建设产线</strong>：部署赋码设备（喷码/贴标）与关联采集系统，完成父子关联。</li><li><strong>上线平台</strong>：建设追溯查询平台，打通 ERP、WMS 与渠道系统，开放企业端与消费者端查询。</li></ol>
+<h2>13.2 关键成败点</h2>
+<p>一物一码项目失败大多不在编码设计本身，而在<strong>赋码准确率</strong>与<strong>关联完整率</strong>。装箱时漏扫一个单品，整箱追溯链即断裂。因此必须在产线设置重扫校验、漏扫拦截与异常告警，并定期盘点码库状态与实物的一致性。</p>
+<h2>13.3 治理规则</h2>
+<ul><li>分类码只增不改、停用不复用，避免历史数据歧义。</li><li>编码由系统按规则自动生成，禁止人工手编或篡改。</li><li>外观或包装变化升版本，结构或功能变化升小类。</li><li>校验位与加密算法变更须全量回归测试，确保历史码可解析。</li></ul>
+<h1 id="section-14">附录A 编码示例详解</h1>
+<p><strong>示例一：服装零售</strong></p>
+<p>产品族码 <code>HY-03-01-002-C:RD|S:XL|M:COT-V1-K</code>，表示海云品牌、服饰大类、上衣中类、T 恤小类、红色、XL 码、棉材质、第一版。对应单品明码 <code>HY260915A1X7K2M9C</code>，暗码为加密二维码，扫码返回验真结果与生产履历。</p>
+<p><strong>示例二：食品饮料</strong></p>
+<p>产品族码 <code>SP-08-01-006-S:500G|P:12M-V1-K</code>，表示食品大类、饮料中类、某饮品小类、500 克装、保质期 12 个月。装箱时 24 瓶单品码关联至一个箱码，6 箱组为一个托盘码。扫码可查询生产批次、灌装时间与冷链记录。</p>
+<p><strong>示例三：电子制造</strong></p>
+<p>产品族码 <code>DX-05-02-011-V:220|C:BK|T:IP54-V2-K</code>，表示电子设备大类、某类中类、某产品小类、220 伏、黑色、IP54 防护等级、第二版。单品码与售后保修系统打通，扫码即可查询保修状态与维修记录。</p>
+<h1 id="section-15">附录B 国内外标准对接</h1>
+<table><thead><tr><th>标准</th><th>编码</th><th>用途</th><th>对接建议</th></tr></thead><tbody><tr><td>GS1</td><td>GTIN</td><td>全球贸易项目代码，标识产品族</td><td>产品族码预留 GTIN 映射字段</td></tr><tr><td>GS1</td><td>SSCC</td><td>系列货运包装箱代码</td><td>托盘码直接采用 SSCC 结构</td></tr><tr><td>GS1</td><td>GLN</td><td>全球位置码</td><td>企业、仓库、门店位置统一编码</td></tr><tr><td>国家药监</td><td>20 位追溯码</td><td>药品医疗器械强制追溯码</td><td>药品行业主码采用国家码，本规范编码作内部扩展</td></tr><tr><td>GB/T 34056</td><td>追溯编码</td><td>消费品质量安全追溯</td><td>属性字典与该国标信息项对齐</td></tr></tbody></table>
+<p>企业自建编码时应预留与上述标准的映射字段，确保在国内流通与出口场景中均可无缝对接，避免后续合规改造成本。</p>
+<p>---</p>
+<p class="foot-note">本规范为通用框架，企业实施时应结合自身行业特性与合规要求，制定实施细则。</p>
+</section>
+</body>
+</html>

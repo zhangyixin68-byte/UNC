@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snowlio Uncia 雪豹码 · 一物一码编码生成器与追溯查询</title>
+<style>
+  :root{
+    --primary:#1565C0; --primary-d:#0C447C; --accent:#00897B; --amber:#E65100;
+    --text:#1f2733; --muted:#6b7684; --line:#e4e9f0; --bg:#f4f7fb; --card:#fff;
+    --udic:#6A1B9A; --udibg:#F3E8F8; --ok:#2e7d32; --warn:#c62828;
+    --shadow:0 1px 3px rgba(20,40,80,.08),0 4px 14px rgba(20,40,80,.05);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Microsoft YaHei","PingFang SC",Segoe UI,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;font-size:14px}
+  .wrap{max-width:1220px;margin:0 auto;padding:0 20px 60px}
+  header{background:linear-gradient(135deg,#0C447C,#1565C0 60%,#0288D1);color:#fff;padding:26px 0 22px;box-shadow:var(--shadow)}
+  header .wrap{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px}
+  header h1{font-size:23px;font-weight:700;letter-spacing:.5px}
+  header p{opacity:.9;font-size:13px;margin-top:4px}
+  .hd-badge{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);padding:6px 12px;border-radius:20px;font-size:12px}
+  .brand{position:relative}
+  .brand .suite{font-size:11px;letter-spacing:2px;opacity:.8;margin-bottom:2px;text-transform:uppercase}
+  .brand .suite b{color:#fff}
+  .brand .cn{font-size:12px;opacity:.85;margin-top:5px}
+  .layout{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:22px}
+  @media(max-width:900px){.layout{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+  .card-h{padding:15px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:9px;font-weight:700;font-size:15px}
+  .card-h .dot{width:8px;height:8px;border-radius:50%;background:var(--primary)}
+  .card-b{padding:18px}
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+  .tab{padding:8px 14px;border:1px solid var(--line);border-radius:8px;background:#fff;cursor:pointer;font-size:13px;color:var(--muted);transition:.15s;user-select:none}
+  .tab:hover{border-color:var(--primary);color:var(--primary)}
+  .tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+  .tab.udi{border-color:var(--udic);color:var(--udic)}
+  .tab.udi.active{background:var(--udic);color:#fff}
+  .tab .u{font-size:11px;opacity:.85;margin-left:3px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:600}
+  input,select{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:7px;font-size:13px;color:var(--text);font-family:inherit;background:#fff}
+  input:focus,select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(21,101,192,.1)}
+  .field{margin-bottom:12px}
+  .hint{font-size:11px;color:#9aa5b1;margin-top:3px}
+  .btn{width:100%;padding:12px;border:none;border-radius:8px;background:var(--primary);color:#fff;font-size:14px;font-weight:700;cursor:pointer;transition:.15s}
+  .btn:hover{background:var(--primary-d)}
+  .btn.udi-btn{background:var(--udic)}
+  .btn.udi-btn:hover{background:#4A148C}
+  .btn.ghost{background:#fff;color:var(--primary);border:1px solid var(--primary);font-weight:600}
+  .btn.sm{padding:8px 12px;font-size:12px;width:auto}
+  .rule-note{background:#F5F8FD;border-left:3px solid var(--primary);padding:10px 12px;border-radius:0 6px 6px 0;font-size:12px;color:#455a72;margin-bottom:16px}
+  .rule-note.udi{background:var(--udibg);border-left-color:var(--udic);color:#5b2c73}
+  .result-empty{text-align:center;color:#aab3bf;padding:46px 10px;font-size:13px}
+  .code-box{background:#0f2038;color:#e8f1ff;border-radius:10px;padding:16px;font-family:Consolas,Monaco,monospace;word-break:break-all;font-size:15px;position:relative;letter-spacing:.5px}
+  .code-box .lbl{font-family:"Microsoft YaHei",sans-serif;font-size:11px;color:#7fa8d8;letter-spacing:0;display:block;margin-bottom:6px}
+  .code-box.udi{background:#1a0f2b;color:#f0e2ff}
+  .code-box.udi .lbl{color:#c79ade}
+  .copy-btn{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff;padding:4px 10px;border-radius:5px;font-size:11px;cursor:pointer;font-family:"Microsoft YaHei",sans-serif}
+  .seg-table{width:100%;border-collapse:collapse;margin-top:14px;font-size:12px}
+  .seg-table th,.seg-table td{border:1px solid var(--line);padding:7px 9px;text-align:left}
+  .seg-table th{background:#f7f9fc;color:var(--muted);font-weight:600;width:34%}
+  .seg-table td.code{font-family:Consolas,monospace;color:var(--primary);font-weight:600}
+  .seg-table.udi td.code{color:var(--udic)}
+  .verified{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:700;margin-left:8px}
+  .verified.ok{background:#e8f5e9;color:var(--ok)}
+  .verified.bad{background:#ffebee;color:var(--warn)}
+  .canvas-wrap{display:flex;justify-content:center;margin:14px 0 4px}
+  canvas{image-rendering:pixelated;border:1px solid var(--line);border-radius:6px;background:#fff}
+  .cap{text-align:center;font-size:11px;color:#9aa5b1;margin-top:5px}
+  /* query */
+  .qbar{display:flex;gap:8px}
+  .qbar input{flex:1}
+  .qbar .btn{width:auto;white-space:nowrap}
+  .trace-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;padding:12px 0 14px;border-bottom:1px dashed var(--line);margin-bottom:14px}
+  .trace-head .prod{font-weight:700;font-size:15px}
+  .trace-head .meta{font-size:12px;color:var(--muted);margin-top:3px;font-family:Consolas,monospace}
+  .pill{padding:4px 10px;border-radius:14px;font-size:11px;font-weight:700}
+  .pill.ok{background:#e8f5e9;color:var(--ok)}
+  .pill.warn{background:#fff3e0;color:var(--amber)}
+  .pill.udi{background:var(--udibg);color:var(--udic)}
+  .tl{position:relative;padding-left:26px}
+  .tl:before{content:"";position:absolute;left:7px;top:6px;bottom:8px;width:2px;background:var(--line)}
+  .node{position:relative;padding:0 0 16px 4px}
+  .node:before{content:"";position:absolute;left:-23px;top:3px;width:12px;height:12px;border-radius:50%;background:#fff;border:2px solid var(--line)}
+  .node.done:before{background:var(--accent);border-color:var(--accent)}
+  .node.current:before{background:var(--amber);border-color:var(--amber);box-shadow:0 0 0 4px rgba(230,81,0,.12)}
+  .node .nt{font-weight:600;font-size:13px}
+  .node .nt .stage{font-size:11px;color:#9aa5b1;font-weight:400;margin-left:6px}
+  .node .nd{font-size:12px;color:var(--muted);margin-top:2px}
+  .node .nd b{color:#455a72}
+  .lib-table{width:100%;border-collapse:collapse;font-size:12px}
+  .lib-table th,.lib-table td{border-bottom:1px solid var(--line);padding:9px 10px;text-align:left}
+  .lib-table th{color:var(--muted);font-weight:600;background:#fafbfd}
+  .lib-table tr:hover td{background:#f7faff}
+  .lib-table .c{font-family:Consolas,monospace;color:var(--primary);font-size:11px}
+  .lib-table .c.udi{color:var(--udic)}
+  .empty-row td{text-align:center;color:#aab3bf;padding:26px}
+  .tag{display:inline-block;padding:2px 7px;border-radius:5px;font-size:10px;background:#eef2f7;color:var(--muted)}
+  .tag.udi{background:var(--udibg);color:var(--udic)}
+  .clear{color:var(--warn);cursor:pointer;font-size:12px}
+  .foot{text-align:center;color:#9aa5b1;font-size:11px;margin-top:26px;line-height:1.8}
+  .two-col-note{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  @media(max-width:600px){.two-col-note{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}}
+  .kv-mini{font-size:11.5px;color:var(--muted);background:#fafbfd;border:1px solid var(--line);border-radius:6px;padding:8px 10px}
+  .kv-mini b{color:var(--text)}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand">
+      <div class="suite"><b>SNOWLIO</b> SUITE <span style="opacity:.7">/ 雪豹云追溯平台家族</span></div>
+      <h1>Snowlio Uncia <span style="font-weight:400;opacity:.9">· 雪豹码</span></h1>
+      <p>一物一码编码生成器与追溯查询演示工具</p>
+      <div class="cn">UNC · One Item, One Uncia. &nbsp;|&nbsp; 分行业生码规则 · GS1 / UDI 独立规则 · 全链路追溯模拟</div>
+    </div>
+    <div class="hd-badge">演示工具 · 数据仅存本地浏览器</div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="layout">
+    <!-- 左：生成器 -->
+    <div class="card">
+      <div class="card-h"><span class="dot"></span>编码生成器</div>
+      <div class="card-b">
+        <div class="tabs" id="tabs"></div>
+        <div id="ruleNote" class="rule-note"></div>
+        <div id="form"></div>
+        <button class="btn" id="genBtn" style="margin-top:6px">生成编码</button>
+      </div>
+    </div>
+
+    <!-- 右：生成结果 -->
+    <div class="card">
+      <div class="card-h"><span class="dot" id="resDot" style="background:#cbd5e1"></span><span id="resTitle">生成结果</span></div>
+      <div class="card-b" id="result">
+        <div class="result-empty">填写左侧表单并点击「生成编码」<br>结果将在此处展示</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 追溯查询 -->
+  <div class="card" style="margin-top:18px">
+    <div class="card-h"><span class="dot" style="background:var(--accent)"></span>追溯查询 · 输入编码查看全生命周期履历</div>
+    <div class="card-b">
+      <div class="qbar">
+        <input id="qInput" placeholder="输入生成的编码，或试试演示码：06901234567892 / HY-03-01-002-C:RD|S:XL-V1-K">
+        <button class="btn" style="background:var(--accent)" id="qBtn">查询追溯</button>
+        <button class="btn ghost sm" id="qDemo">载入演示码</button>
+      </div>
+      <div id="qResult" style="margin-top:16px"></div>
+    </div>
+  </div>
+
+  <!-- 码库 -->
+  <div class="card" style="margin-top:18px">
+    <div class="card-h">
+      <span class="dot" style="background:var(--amber)"></span>本地码库
+      <span style="margin-left:auto;font-weight:400;font-size:12px;color:var(--muted)">
+        <span id="libCount">0</span> 条记录 · <span class="clear" id="clearLib">清空</span>
+      </span>
+    </div>
+    <div class="card-b" style="overflow-x:auto">
+      <table class="lib-table">
+        <thead><tr><th>行业/规则</th><th>编码</th><th>生成时间</th><th>操作</th></tr></thead>
+        <tbody id="libBody"><tr class="empty-row"><td colspan="4">暂无记录，生成一个编码试试</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="foot">
+    <b style="color:#6b7684">Snowlio Uncia 雪豹码 · UNC</b> — Snowlio Suite 雪豹云追溯平台家族 / 一物一码生成系统<br>
+    本工具为演示用途：GS1 校验位、GTIN-14、AI 应用标识符按标准实现；码图为示意图，非真实可扫描码。<br>
+    医疗器械 UDI 规则依据 GS1 标准（GS1 为中国 UDI 发证机构之一），正式上报请以国家药监局 UDI 数据库要求为准。
+  </div>
+</div>
+
+<script>
+/* ============ GS1 校验：Mod 10（GTIN 校验位）============ */
+function gs1CheckDigit(body){
+  // body: 不含校验位的数字串，从右往左权重 3,1,3,1...
+  let sum=0, w=3;
+  for(let i=body.length-1;i>=0;i--){ sum+=parseInt(body[i],10)*w; w = w===3?1:3; }
+  return (10 - (sum%10))%10;
+}
+function verifyGtin(gtin){
+  if(!/^\d{13,14}$/.test(gtin)) return false;
+  const body=gtin.slice(0,-1), cd=parseInt(gtin.slice(-1),10);
+  return gs1CheckDigit(body)===cd;
+}
+/* 简化 Mod37 校验（企业明码），字符集 0-9A-Z 去除 I O */
+const CD37='0123456789ABCDEFGHJKLMNPQRSTUVWXYZ';
+function mod37(body){
+  let sum=0,w=2,base=CD37.length;
+  for(const ch of body){ const v=CD37.indexOf(ch); if(v<0) continue; sum+=v*w; w = w>=base?2:w+1; }
+  return CD37[sum%base];
+}
+/* 确定性伪随机序列（同一输入每次结果一致）*/
+function seeded(str,len){
+  let h=2166136261>>>0;
+  for(let i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619)>>>0; }
+  let out='';const chars='ABCDEFGHJKLMNPQRSTUVWXYZ0123456789';
+  while(out.length<len){ h=Math.imul(h,1103515245+12345)>>>0; out+=chars[h%chars.length]; }
+  return out.slice(0,len);
+}
+function yyyymmdd(d){return d.replaceAll('-','');}
+function yymmdd(d){return d.slice(2).replaceAll('-','');}
+function pad(n,l){n=String(n);while(n.length<l)n='0'+n;return n;}
+
+/* ============ 行业配置 ============ */
+const TABS=[
+  {id:'food',label:'食品饮料',udi:false},
+  {id:'c3',label:'3C电子',udi:false},
+  {id:'cosmetic',label:'化妆品',udi:false},
+  {id:'apparel',label:'服装鞋帽',udi:false},
+  {id:'udi',label:'医疗器械 UDI',udi:true,u:'GS1'}
+];
+const FIELDS={
+  food:[
+    {k:'prefix',l:'企业前缀',v:'HY',h:'2-4 位大写字母'},
+    {k:'cat',l:'品类',v:'08',type:'select',opts:['08 食品','09 饮料','10 乳制品']},
+    {k:'item',l:'品项代码',v:'006',h:'3 位数字'},
+    {k:'spec',l:'规格',v:'500G',type:'select',opts:['500G','1L','250ML','礼盒装']},
+    {k:'shelf',l:'保质期',v:'12M',type:'select',opts:['6M','12M','18M','24M']},
+    {k:'date',l:'生产日期',v:'2026-11-20',type:'date'},
+    {k:'batch',l:'批次号',v:'LOT261120'}
+  ],
+  c3:[
+    {k:'prefix',l:'品牌码',v:'DX',h:'2-4 位大写字母'},
+    {k:'cat',l:'品类',v:'05',type:'select',opts:['05 电子设备','06 智能硬件']},
+    {k:'item',l:'型号代码',v:'011'},
+    {k:'volt',l:'电压/容量',v:'220V',type:'select',opts:['220V','12V','5000mAh','10000mAh']},
+    {k:'color',l:'颜色',v:'BK',type:'select',opts:['BK 黑','WH 白','SL 银']},
+    {k:'date',l:'生产日期',v:'2026-11-20',type:'date'}
+  ],
+  cosmetic:[
+    {k:'prefix',l:'品牌码',v:'MZ',h:'2-4 位大写字母'},
+    {k:'cat',l:'品类',v:'07',type:'select',opts:['07 护肤','11 彩妆','12 洗护']},
+    {k:'item',l:'品项代码',v:'003'},
+    {k:'shade',l:'色号/规格',v:'30ML',type:'select',opts:['30ML','50ML','#01 象牙白','#02 自然色']},
+    {k:'date',l:'生产日期',v:'2026-11-20',type:'date'},
+    {k:'shelf',l:'限用日期',v:'2028-11-19',type:'date'}
+  ],
+  apparel:[
+    {k:'prefix',l:'品牌码',v:'HY',h:'2-4 位大写字母'},
+    {k:'cat',l:'品类',v:'03',type:'select',opts:['03 服饰','14 鞋靴','15 箱包']},
+    {k:'item',l:'款号',v:'002',h:'3 位数字款式代码'},
+    {k:'color',l:'颜色',v:'RD',type:'select',opts:['RD 红','BK 黑','WH 白','BL 蓝','KH 卡其']},
+    {k:'size',l:'尺码',v:'XL',type:'select',opts:['S','M','L','XL','XXL','38','40','42']},
+    {k:'material',l:'材质',v:'COT',type:'select',opts:['COT 棉','POL 涤纶','WOL 羊毛','LEA 皮革']},
+    {k:'date',l:'生产日期',v:'2026-11-20',type:'date'}
+  ],
+  udi:[
+    {k:'company',l:'GS1 企业前缀',v:'06901234567',h:'11 位，中国大陆 GS1 分配的前缀通常以 69 开头'},
+    {k:'itemref',l:'产品参考代码',v:'89',h:'与企业前缀合计 13 位，第 14 位为自动校验位'},
+    {k:'name',l:'器械名称',v:'一次性使用无菌注射器'},
+    {k:'model',l:'型号规格',v:'5mL 带针'},
+    {k:'lot',l:'生产批号 (10)',v:'LOT261120'},
+    {k:'prod',l:'生产日期 (11)',v:'2026-11-20',type:'date'},
+    {k:'exp',l:'失效日期 (17)',v:'2029-11-19',type:'date'},
+    {k:'serial',l:'序列号 (21)',v:'A00037',h:'高值耗材按单品序列管理'}
+  ]
+};
+const NOTES={
+  food:'通用企业码规则：SKU 产品族码 + UIN 单品码。定长分类骨架，属性字典驱动，明码半结构化 + 加密二维码。',
+  c3:'3C 电子：以序列号 SN 单品管理，与保修/售后系统打通。扫码即可查保修状态与维修记录。',
+  cosmetic:'化妆品：重点在防伪与防窜货，消费者扫码验真为主要触点，管理批次与限用日期。',
+  apparel:'服装鞋帽：SKU 按「款-色-码」三维管理，同一款号下不同颜色/尺码是不同 SKU；UIN 单品码贯穿生产、吊牌、渠道与零售，防窜货与退换货溯源。',
+  udi:'医疗器械 UDI（GS1 标准）：UDI = UDI-DI（GTIN-14，含 Mod10 校验位）+ UDI-PI（批号/序列号/日期，用 AI 应用标识符）。GS1 是中国 UDI 发证机构之一。'
+};
+
+let current='food';
+let library=loadLib();
+
+/* ============ 初始化 ============ */
+function initTabs(){
+  const t=document.getElementById('tabs');
+  t.innerHTML=TABS.map(x=>`<div class="tab ${x.udi?'udi':''} ${x.id===current?'active':''}" data-id="${x.id}">${x.label}${x.u?`<span class="u">${x.u}</span>`:''}</div>`).join('');
+  t.querySelectorAll('.tab').forEach(el=>el.onclick=()=>{current=el.dataset.id;initTabs();renderForm();clearResult();});
+}
+function renderForm(){
+  const note=document.getElementById('ruleNote');
+  note.textContent=NOTES[current];
+  note.className='rule-note'+(current==='udi'?' udi':'');
+  const f=FIELDS[current];
+  let html='<div class="grid2">';
+  f.forEach(x=>{
+    let ctrl;
+    if(x.type==='select') ctrl=`<select id="f_${x.k}">${x.opts.map(o=>`<option ${o.startsWith(x.v)?'selected':''}>${o}</option>`).join('')}</select>`;
+    else ctrl=`<input id="f_${x.k}" type="${x.type||'text'}" value="${x.v}">`;
+    html+=`<div class="field"><label>${x.l}</label>${ctrl}${x.h?`<div class="hint">${x.h}</div>`:''}</div>`;
+  });
+  html+='</div>';
+  document.getElementById('form').innerHTML=html;
+  const btn=document.getElementById('genBtn');
+  btn.className='btn'+(current==='udi'?' udi-btn':'');
+  btn.textContent=current==='udi'?'生成 UDI 编码（GS1）':'生成编码';
+  document.getElementById('resDot').style.background=current==='udi'?'var(--udic)':'var(--primary)';
+  document.getElementById('resTitle').textContent=current==='udi'?'UDI 生成结果（GS1）':'生成结果';
+}
+function val(k){const e=document.getElementById('f_'+k);return e?e.value.trim():'';}
+function sel(k){return val(k).split(' ')[0];}
+
+/* ============ 生码 ============ */
+function makeCode(){
+  if(current==='udi') return makeUDI();
+  if(current==='food') return makeFood();
+  if(current==='c3') return makeC3();
+  if(current==='cosmetic') return makeCosmetic();
+  if(current==='apparel') return makeApparel();
+}
+function baseMeta(name,industry){
+  return {name,industry,udi:false,time:new Date().toLocaleString('zh-CN',{hour12:false})};
+}
+function makeFood(){
+  const prefix=val('prefix').toUpperCase(),cat=sel('cat'),item=pad(val('item'),3),spec=val('spec'),shelf=val('shelf'),date=val('date'),batch=val('batch');
+  const sku=`${prefix}-${cat}-01-${item}-S:${spec}|P:${shelf}-V1`;
+  const uinBody=prefix.slice(0,2)+yyyymmdd(date)+'A1'+seeded(prefix+cat+item+date,6);
+  const uin=uinBody+mod37(uinBody);
+  const full=sku+'-'+mod37(sku.replace(/[^0-9A-Z]/g,'')).slice(0,1);
+  const segs=[
+    ['产品族码 SKU',sku,'标识“是什么产品”，稳定存于 ERP'],
+    ['企业前缀',prefix,'组织 / 品牌标识'],
+    ['分类',`${cat}-01-${item}`,'大类-中类-小类，定长骨架'],
+    ['属性段',`S:${spec} | P:${shelf}`,'规格 / 保质期，字典驱动'],
+    ['单品码 UIN',uin,`企业码+日期+工厂+随机序列+校验位（${mod37(uinBody)}）`],
+    ['批次号',batch,'关联生产批次，用于召回']
+  ];
+  return {...baseMeta('食品饮料单品','食品饮料'),code:full,main:uin,segs,aiLabel:'企业明码 + 加密二维码（示意）'};
+}
+function makeC3(){
+  const prefix=val('prefix').toUpperCase(),cat=sel('cat'),item=pad(val('item'),3),volt=val('volt'),color=val('color'),date=val('date');
+  const sku=`${prefix}-${cat}-02-${item}-V:${volt}|C:${color.split(' ')[0]}-V2`;
+  const snBody='DX'+yyyymmdd(date)+pad(item,3)+seeded(prefix+item+date,6);
+  const sn=snBody+mod37(snBody);
+  const segs=[
+    ['产品族码 SKU',sku,'产品型号族，稳定主数据'],
+    ['分类',`${cat}-02-${item}`,'电子设备 / 型号'],
+    ['属性段',`V:${volt} | C:${color.split(' ')[0]}`,'电压 / 颜色'],
+    ['序列号 SN',sn,'单品唯一，绑定保修与售后'],
+    ['生产日期',date,'用于保修期计算']
+  ];
+  return {...baseMeta('3C 电子单品','3C电子'),code:sku,main:sn,segs,aiLabel:'SN 序列号 + 二维码（示意）'};
+}
+function makeCosmetic(){
+  const prefix=val('prefix').toUpperCase(),cat=sel('cat'),item=pad(val('item'),3),shade=val('shade'),date=val('date'),shelf=val('shelf');
+  const ck=shade.includes('#')?'C':'S';
+  const sku=`${prefix}-${cat}-03-${item}-${ck}:${shade.split(' ')[0]}-V1`;
+  const body=prefix.slice(0,2)+yyyymmdd(date)+'B2'+seeded(prefix+item+shade,6);
+  const uin=body+mod37(body);
+  const segs=[
+    ['产品族码 SKU',sku,'品牌 / 品类 / 色号'],
+    ['属性段',`${ck}:${shade.split(' ')[0]}`,'色号或规格'],
+    ['单品码 UIN',uin,'一件一码，消费者扫码验真'],
+    ['生产日期',date,'批次管理'],
+    ['限用日期',shelf,'过期预警']
+  ];
+  return {...baseMeta('化妆品单品','化妆品'),code:sku,main:uin,segs,aiLabel:'明码 + 加密二维码（示意）'};
+}
+function makeApparel(){
+  const prefix=val('prefix').toUpperCase(),cat=sel('cat'),item=pad(val('item'),3),color=sel('color'),size=sel('size'),material=sel('material'),date=val('date');
+  // SKU 按「款-色-码」三维：同一款号不同颜色/尺码为不同 SKU
+  const sku=`${prefix}-${cat}-01-${item}-C:${color}|S:${size}|M:${material}-V1`;
+  const uinBody=prefix.slice(0,2)+yyyymmdd(date)+'F3'+seeded(prefix+cat+item+color+size,6);
+  const uin=uinBody+mod37(uinBody);
+  const segs=[
+    ['产品族码 SKU',sku,'款-色-码三维，稳定存于 ERP'],
+    ['品牌 / 分类',`${prefix} / ${cat}-01-${item}`,'品牌 / 大类-中类-款号'],
+    ['属性段',`C:${color} | S:${size} | M:${material}`,'颜色 / 尺码 / 材质，字典驱动'],
+    ['单品码 UIN',uin,`品牌+日期+工厂+随机序列+校验位（${mod37(uinBody)}）`],
+    ['生产日期',date,'用于吊牌与批次管理']
+  ];
+  return {...baseMeta('服装单品','服装鞋帽'),code:sku,main:uin,segs,aiLabel:'吊牌明码 + 加密二维码（示意）'};
+}
+function makeUDI(){
+  const company=val('company'),itemref=val('itemref'),body=company+itemref;
+  if(!/^\d{13}$/.test(body)){
+    alert('GS1 企业前缀 + 产品参考代码合计需为 13 位数字（第 14 位为自动校验位）');
+    return null;
+  }
+  const cd=gs1CheckDigit(body), gtin=body+cd;
+  const prod=yymmdd(val('prod')),exp=yymmdd(val('exp')),lot=val('lot'),serial=val('serial');
+  const hri=`(01)${gtin}(11)${prod}(17)${exp}(10)${lot}(21)${serial}`;
+  const raw=`01${gtin}11${prod}17${exp}10${lot}\u241D21${serial}`;
+  const segs=[
+    ['UDI-DI（设备标识）',gtin,'GTIN-14 = 前缀'+company+' + 参考'+itemref+' + 校验位<b>'+cd+'</b>'],
+    ['校验位（Mod 10）',String(cd),'按 GS1 校验算法计算：从左13位从右起 ×3/×1 交替求和'],
+    ['(01) GTIN-14',gtin,'UDI-DI 数据载体主标识'],
+    ['(11) 生产日期',prod,'YYMMDD 格式'],
+    ['(17) 失效日期',exp,'YYMMDD 格式'],
+    ['(10) 生产批号',lot,'批次追溯'],
+    ['(21) 序列号',serial,'单品唯一标识']
+  ];
+  return {
+    name:val('name')+' '+val('model'),industry:'医疗器械 UDI',udi:true,
+    code:hri,main:gtin,segs,aiLabel:'GS1 DataMatrix（HRI 人可读如上）',
+    raw,time:new Date().toLocaleString('zh-CN',{hour12:false}),
+    extra:{gtin,cd,checkOK:verifyGtin(gtin),exp,lot,serial}
+  };
+}
+
+/* ============ 码图（示意）============ */
+function drawMatrix(canvas,seed,udi){
+  const n=udi?22:25, cell=Math.floor(200/n), size=n*cell;
+  canvas.width=size;canvas.height=size;
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,size,size);
+  let h=2166136261>>>0;
+  for(let i=0;i<seed.length;i++){h^=seed.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}
+  const grid=[];
+  for(let r=0;r<n;r++){grid[r]=[];for(let c=0;c<n;c++){h=Math.imul(h^ (r*31+c),2246822519)>>>0;grid[r][c]=((h>>>7)&1)===1;}}
+  ctx.fillStyle=udi?'#4A148C':'#0f2038';
+  for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(grid[r][c])ctx.fillRect(c*cell,r*cell,cell,cell);
+  // DataMatrix 定位图形：左边和下边实线，上边和右边虚线
+  if(udi){
+    for(let i=0;i<n;i++){ctx.fillRect(0,i*cell,cell,cell);ctx.fillRect(i*cell,(n-1)*cell,cell,cell);}
+    for(let i=0;i<n;i+=2){ctx.fillRect(i*cell,0,cell,cell);ctx.fillRect((n-1)*cell,i*cell,cell,cell);}
+  }else{
+    // 二维码三个定位角
+    const drawFinder=(ox,oy)=>{ctx.fillStyle='#0f2038';ctx.fillRect(ox,oy,7*cell,7*cell);ctx.fillStyle='#fff';ctx.fillRect(ox+cell,oy+cell,5*cell,5*cell);ctx.fillStyle='#0f2038';ctx.fillRect(ox+2*cell,oy+2*cell,3*cell,3*cell);};
+    drawFinder(0,0);drawFinder((n-7)*cell,0);drawFinder(0,(n-7)*cell);
+  }
+}
+
+/* ============ 渲染结果 ============ */
+function renderResult(res){
+  const box=document.getElementById('result');
+  const rows=res.segs.map(s=>`<tr><th>${s[0]}</th><td class="code">${s[1]}<span class="verified ok">✓</span></td></tr>`).join('');
+  let extra='';
+  if(res.udi){
+    extra=`<div class="kv-mini" style="margin-top:12px">GS1 编码串（FNC1 分隔符以 ␝ 表示）：<br><b style="font-family:Consolas;word-break:break-all">${res.raw}</b></div>`;
+  }
+  box.innerHTML=`
+    <div class="code-box ${res.udi?'udi':''}">
+      <span class="lbl">${res.udi?'完整 UDI（HRI 人可读）':'生成的编码'}</span>
+      <button class="copy-btn" id="cpBtn">复制</button>
+      ${res.code}
+    </div>
+    <div class="canvas-wrap"><canvas id="mCanvas"></canvas></div>
+    <div class="cap">${res.aiLabel} · 示意图，非真实可扫描码</div>
+    <table class="seg-table ${res.udi?'udi':''}"><tbody>${rows}</tbody></table>
+    ${extra}
+    <button class="btn ghost" style="width:100%;margin-top:14px" id="toQuery">用此编码查询追溯 →</button>
+  `;
+  drawMatrix(document.getElementById('mCanvas'),res.main,res.udi);
+  document.getElementById('cpBtn').onclick=()=>{copy(res.code);};
+  document.getElementById('toQuery').onclick=()=>{document.getElementById('qInput').value=res.code;doQuery();};
+}
+function copy(t){
+  if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>alert('已复制')).catch(()=>fallbackCopy(t));
+  else fallbackCopy(t);
+}
+function fallbackCopy(t){const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');document.body.removeChild(a);alert('已复制');}
+function clearResult(){
+  document.getElementById('result').innerHTML='<div class="result-empty">填写左侧表单并点击「生成编码」<br>结果将在此处展示</div>';
+}
+
+/* ============ 追溯模拟 ============ */
+const STAGES=[
+  {k:'原料生产',desc:'原料批次入库、投料与工艺参数记录'},
+  {k:'生产赋码',desc:'成品完成，生成唯一身份并加载码'},
+  {k:'包装关联',desc:'单品→箱→托盘父子映射建立'},
+  {k:'入库出库',desc:'仓库收发扫码，更新库存状态'},
+  {k:'渠道配送',desc:'经销商收货，记录流向与物流单'},
+  {k:'终端销售',desc:'门店上架与零售扫码'},
+  {k:'消费者/售后',desc:'扫码验真、售后与召回登记'}
+];
+function traceFor(rec){
+  let h=2166136261>>>0;
+  const s=rec.main+rec.code;
+  for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}
+  // 演示数据走完整链路；新生成的码走到"包装关联"
+  const deep=!!rec.demo;
+  const upto=deep?STAGES.length:3;
+  return STAGES.map((st,i)=>{
+    const done=i<upto;
+    const cur=i===upto-1;
+    const d=new Date(Date.now()-(STAGES.length-i)*86400000*(1+(h%3)));
+    const locs=['山东生产基地-原料库','深圳一号产线','成品包装车间','华东中心仓','国联物流-干线','XX连锁门店','湖北武汉'];
+    const ops=['仓管员 A12','操作工 B07','质检员 C03','库管 D21','司机 E08','店员 F15','消费者 G**'];
+    return {...st,done,cur,time:done?d.toLocaleString('zh-CN',{hour12:false}):'—',
+      loc:done?locs[i]:'—',op:done?ops[i]:'—'};
+  });
+}
+function findRecord(q){
+  // 本地码库精确/包含匹配
+  let rec=library.find(r=>r.code===q||r.main===q);
+  if(rec) return rec;
+  // 演示码
+  const demo=DEMO.find(r=>r.code===q||r.main===q||r.aliases&&r.aliases.includes(q));
+  return demo||null;
+}
+function doQuery(){
+  const q=document.getElementById('qInput').value.trim();
+  const out=document.getElementById('qResult');
+  if(!q){out.innerHTML='<div style="color:var(--warn);font-size:13px">请输入编码</div>';return;}
+  const rec=findRecord(q);
+  if(!rec){
+    out.innerHTML=`<div style="background:#fff3e0;border:1px solid #ffcc80;border-radius:8px;padding:14px;color:#8a4b00;font-size:13px">
+      未查询到该编码。演示可输入：<b>06901234567892</b>（UDI 的 GTIN-14）或 <b>HY-03-01-002-C:RD|S:XL-V1-K</b>（食品码）。</div>`;
+    return;
+  }
+  const nodes=traceFor(rec);
+  const badge=rec.udi?'<span class="pill udi">UDI 器械</span>':'<span class="pill ok">正品验证通过</span>';
+  const warnNode=rec.udi?'<span class="pill ok">校验位通过 · GS1 合规</span>':'';
+  const tl=nodes.map(n=>`<div class="node ${n.cur?'current':n.done?'done':''}">
+      <div class="nt">${n.k}<span class="stage">${n.cur?'当前节点':n.done?'已完成':'待流转'}</span></div>
+      <div class="nd">${n.done?`<b>时间</b> ${n.time} &nbsp;·&nbsp; <b>地点</b> ${n.loc} &nbsp;·&nbsp; <b>操作人</b> ${n.op} &nbsp;·&nbsp; ${n.desc}`:n.desc}</div>
+    </div>`).join('');
+  out.innerHTML=`
+    <div class="trace-head">
+      <div><div class="prod">${rec.name}</div>
+        <div class="meta">${rec.code}</div>
+        <div style="margin-top:8px">${badge} ${warnNode}</div>
+      </div>
+      <div style="font-size:12px;color:var(--muted);text-align:right">行业规则：${rec.industry}<br>赋码时间：${rec.time||'—'}</div>
+    </div>
+    <div class="tl">${tl}</div>
+    <div class="kv-mini">防伪核验：码值唯一 ✓ &nbsp;|&nbsp; 扫码次数 1 次（正常） &nbsp;|&nbsp; 授权区域匹配 ✓ &nbsp;|&nbsp; 数据链完整 ✓</div>
+  `;
+}
+
+/* ============ 码库 ============ */
+function loadLib(){try{return JSON.parse(localStorage.getItem('ydm_lib')||'[]');}catch(e){return [];}}
+function saveLib(){try{localStorage.setItem('ydm_lib',JSON.stringify(library));}catch(e){}}
+function renderLib(){
+  document.getElementById('libCount').textContent=library.length;
+  const body=document.getElementById('libBody');
+  if(!library.length){body.innerHTML='<tr class="empty-row"><td colspan="4">暂无记录，生成一个编码试试</td></tr>';return;}
+  body.innerHTML=library.map((r,i)=>`<tr>
+    <td><span class="tag ${r.udi?'udi':''}">${r.industry}</span></td>
+    <td class="c ${r.udi?'udi':''}" title="${r.code}">${r.code.length>46?r.code.slice(0,46)+'…':r.code}</td>
+    <td>${r.time}</td>
+    <td><span class="clear" data-i="${i}" style="color:var(--primary);cursor:pointer">查询</span> · <span class="clear" data-del="${i}">删除</span></td>
+  </tr>`).join('');
+  body.querySelectorAll('[data-i]').forEach(e=>e.onclick=()=>{document.getElementById('qInput').value=library[e.dataset.i].code;doQuery();window.scrollTo({top:document.getElementById('qInput').getBoundingClientRect().top+scrollY-90,behavior:'smooth'});});
+  body.querySelectorAll('[data-del]').forEach(e=>e.onclick=()=>{library.splice(e.dataset.del,1);saveLib();renderLib();});
+}
+
+/* ============ 演示数据 ============ */
+const DEMO=[
+  {name:'一次性使用无菌注射器 5mL 带针',industry:'医疗器械 UDI',udi:true,demo:true,time:'2026-11-18 09:12:00',
+   code:'(01)06901234567892(11)261118(17)291118(10)LOT261118(21)A00037',main:'06901234567892',
+   aliases:['06901234567892','6901234567892']},
+  {name:'纯净水 500G（食品演示）',industry:'食品饮料',udi:false,demo:true,time:'2026-11-15 14:30:00',
+   code:'HY-03-01-002-C:RD|S:XL-V1-K',main:'HY261115A1X7K2M'},
+  {name:'棉质圆领 T 恤 XL 红色（服装演示）',industry:'服装鞋帽',udi:false,demo:true,time:'2026-11-16 10:05:00',
+   code:'HY-03-01-002-C:RD|S:XL|M:COT-V1',main:'HY261120F3X7K2M'}
+];
+
+/* ============ 事件绑定 ============ */
+document.getElementById('genBtn').onclick=()=>{
+  const res=makeCode();
+  if(!res) return;
+  renderResult(res);
+  library.unshift(res);saveLib();renderLib();
+  res._libIndex=0;
+};
+document.getElementById('qBtn').onclick=doQuery;
+document.getElementById('qInput').addEventListener('keydown',e=>{if(e.key==='Enter')doQuery();});
+document.getElementById('qDemo').onclick=()=>{document.getElementById('qInput').value=DEMO[0].code;doQuery();};
+document.getElementById('clearLib').onclick=()=>{if(confirm('确定清空本地码库？')){library=[];saveLib();renderLib();}};
+
+initTabs();renderForm();renderLib();
+</script>
+</body>
+</html>
