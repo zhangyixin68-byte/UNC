@@ -145,7 +145,7 @@
     <div class="card-h"><span class="dot" style="background:var(--accent)"></span>追溯查询 · 输入编码查看全生命周期履历</div>
     <div class="card-b">
       <div class="qbar">
-        <input id="qInput" placeholder="输入生成的编码，或试试演示码：06901234567892 / HY-03-01-002-C:RD|S:XL-V1-K">
+        <input id="qInput" placeholder="输入编码，或试试演示码：06901234567892（注射器UDI）/ 6901234567311（支架UDI）/ HY-03-01-002-C:RD|S:XL-V1-K（食品）">
         <button class="btn" style="background:var(--accent)" id="qBtn">查询追溯</button>
         <button class="btn ghost sm" id="qDemo">载入演示码</button>
       </div>
@@ -252,14 +252,24 @@ const FIELDS={
     {k:'date',l:'生产日期',v:'2026-11-20',type:'date'}
   ],
   udi:[
-    {k:'company',l:'GS1 企业前缀',v:'06901234567',h:'11 位，中国大陆 GS1 分配的前缀通常以 69 开头'},
-    {k:'itemref',l:'产品参考代码',v:'89',h:'与企业前缀合计 13 位，第 14 位为自动校验位'},
+    {k:'device',l:'器械类型（选择自动填充）',v:'一次性使用无菌注射器',type:'device',opts:['一次性使用无菌注射器','冠状动脉药物洗脱支架','骨科锁定接骨板','植入式心脏起搏器','数字化X射线摄影系统','体外诊断试剂（抗原检测）','医用外科口罩','一次性使用输液器']},
     {k:'name',l:'器械名称',v:'一次性使用无菌注射器'},
-    {k:'model',l:'型号规格',v:'5mL 带针'},
+    {k:'model',l:'型号规格',v:'5mL 带针 0.7mm'},
+    {k:'level',l:'包装层级',v:'基础包装',type:'select',opts:['基础包装','中包装','运输箱']},
+    {k:'company',l:'GS1 企业前缀 (01)',v:'06901234567',h:'11 位，中国大陆 GS1 前缀通常以 69 开头'},
+    {k:'itemref',l:'产品参考代码 (01)',v:'89',h:'与前缀合计 13 位，第 14 位为自动校验位 → GTIN-14'},
     {k:'lot',l:'生产批号 (10)',v:'LOT261120'},
+    {k:'serial',l:'序列号 (21)',v:'A00037',h:'高值植入器械按单品序列管理'},
     {k:'prod',l:'生产日期 (11)',v:'2026-11-20',type:'date'},
     {k:'exp',l:'失效日期 (17)',v:'2029-11-19',type:'date'},
-    {k:'serial',l:'序列号 (21)',v:'A00037',h:'高值耗材按单品序列管理'}
+    {k:'country',l:'原产国 (422)',v:'156',h:'ISO 3166 数字码，中国 156'},
+    {k:'gln',l:'生产地点 GLN (414)',v:'0690123400018',h:'13 位位置码，末位校验自动生成'},
+    {k:'qty',l:'内含数量 (37)',v:'20',h:'中包装 / 运输箱内基础包装数量'},
+    {k:'inner',l:'内含物 GTIN (02)',v:'',h:'选填，包装内单品 GTIN-14'},
+    {k:'addid',l:'附加产品标识 (240)',v:'',h:'选填，最多 30 位字母数字'},
+    {k:'secserial',l:'二级序列号 (250)',v:'',h:'选填'},
+    {k:'po',l:'客户订单号 (400)',v:'',h:'选填'},
+    {k:'shipto',l:'收货方邮编 (420)',v:'',h:'选填'}
   ]
 };
 const NOTES={
@@ -267,8 +277,30 @@ const NOTES={
   c3:'3C 电子：以序列号 SN 单品管理，与保修/售后系统打通。扫码即可查保修状态与维修记录。',
   cosmetic:'化妆品：重点在防伪与防窜货，消费者扫码验真为主要触点，管理批次与限用日期。',
   apparel:'服装鞋帽：SKU 按「款-色-码」三维管理，同一款号下不同颜色/尺码是不同 SKU；UIN 单品码贯穿生产、吊牌、渠道与零售，防窜货与退换货溯源。',
-  udi:'医疗器械 UDI（GS1 标准）：UDI = UDI-DI（GTIN-14，含 Mod10 校验位）+ UDI-PI（批号/序列号/日期，用 AI 应用标识符）。GS1 是中国 UDI 发证机构之一。'
+  udi:'医疗器械 UDI（GS1 标准）：UDI = UDI-DI（GTIN-14，AI 01）+ UDI-PI（AI 10/11/17/21/22…）+ 物流扩展（AI 37/400/414/420/422）。含 8 类器械预设、13 个应用标识符、GTIN/GLN 双 Mod10 校验。GS1 是中国 UDI 发证机构之一。'
 };
+
+/* ============ GS1 UDI 器械预设（切换自动填充）============ */
+const UDI_PRESETS={
+  '一次性使用无菌注射器':{name:'一次性使用无菌注射器',model:'5mL 带针 0.7mm',company:'06901234567',itemref:'89',lot:'LOT261120',serial:'A00037',prod:'2026-11-20',exp:'2029-11-19',level:'基础包装'},
+  '冠状动脉药物洗脱支架':{name:'冠状动脉药物洗脱支架',model:'2.75mm×18mm',company:'06901234567',itemref:'31',lot:'ST260915',serial:'S260915018',prod:'2026-09-15',exp:'2029-09-14',level:'基础包装'},
+  '骨科锁定接骨板':{name:'骨科锁定加压接骨板',model:'6 孔 LCP 不锈钢',company:'06901234567',itemref:'45',lot:'OR260820',serial:'P26082006',prod:'2026-08-20',exp:'2031-08-19',level:'基础包装'},
+  '植入式心脏起搏器':{name:'植入式心脏起搏器',model:'双腔  multimode',company:'06901234567',itemref:'07',lot:'PM260710',serial:'PM26A00193',prod:'2026-07-10',exp:'2033-07-09',level:'基础包装'},
+  '数字化X射线摄影系统':{name:'数字化医用X射线摄影系统',model:'DR-800 型',company:'06901234567',itemref:'62',lot:'DR261005',serial:'DR26100501',prod:'2026-10-05',exp:'2036-10-04',level:'基础包装'},
+  '体外诊断试剂（抗原检测）':{name:'新型冠状病毒抗原检测试剂盒',model:'胶体金法 20 人份',company:'06901234567',itemref:'18',lot:'IVD261118',serial:'K26111801',prod:'2026-11-18',exp:'2027-11-17',level:'中包装'},
+  '医用外科口罩':{name:'医用外科口罩',model:'无菌型 17.5×9.5cm',company:'06901234567',itemref:'93',lot:'MK261110',serial:'',prod:'2026-11-10',exp:'2028-11-09',level:'运输箱'},
+  '一次性使用输液器':{name:'一次性使用输液器',model:'带针 0.7mm',company:'06901234567',itemref:'56',lot:'IF261105',serial:'F26110502',prod:'2026-11-05',exp:'2029-11-04',level:'基础包装'}
+};
+
+/* GS1 应用标识符说明（用于结果表）*/
+const AI_DEF={
+  '01':'GTIN-14 设备标识（UDI-DI）','02':'内含物 GTIN','10':'生产批号 / 批次','11':'生产日期',
+  '17':'失效日期','21':'序列号','22':'变体 / 包装指示器','37':'内含数量',
+  '240':'附加产品标识','250':'二级序列号','400':'客户订单号','414':'生产地点 GLN',
+  '420':'收货方邮编','422':'原产国（ISO 3166 数字码）'
+};
+/* 定长 AI（无需 FNC1 分隔），其余为可变长需 ␝ 分隔 */
+const AI_FIXED={'01':14,'02':14,'11':6,'17':6,'22':2,'37':0,'414':13,'422':3};
 
 let current='food';
 let library=loadLib();
@@ -287,7 +319,7 @@ function renderForm(){
   let html='<div class="grid2">';
   f.forEach(x=>{
     let ctrl;
-    if(x.type==='select') ctrl=`<select id="f_${x.k}">${x.opts.map(o=>`<option ${o.startsWith(x.v)?'selected':''}>${o}</option>`).join('')}</select>`;
+    if(x.type==='select'||x.type==='device') ctrl=`<select id="f_${x.k}" ${x.type==='device'?'onchange="applyPreset(this.value)"':''}>${x.opts.map(o=>`<option ${o.startsWith(x.v)?'selected':''}>${o}</option>`).join('')}</select>`;
     else ctrl=`<input id="f_${x.k}" type="${x.type||'text'}" value="${x.v}">`;
     html+=`<div class="field"><label>${x.l}</label>${ctrl}${x.h?`<div class="hint">${x.h}</div>`:''}</div>`;
   });
@@ -301,6 +333,12 @@ function renderForm(){
 }
 function val(k){const e=document.getElementById('f_'+k);return e?e.value.trim():'';}
 function sel(k){return val(k).split(' ')[0];}
+/* 切换器械类型时自动填充预设字段 */
+function applyPreset(name){
+  const p=UDI_PRESETS[name];if(!p)return;
+  Object.keys(p).forEach(k=>{const el=document.getElementById('f_'+k);if(el)el.value=p[k];});
+  clearResult();
+}
 
 /* ============ 生码 ============ */
 function makeCode(){
@@ -380,23 +418,51 @@ function makeUDI(){
     return null;
   }
   const cd=gs1CheckDigit(body), gtin=body+cd;
-  const prod=yymmdd(val('prod')),exp=yymmdd(val('exp')),lot=val('lot'),serial=val('serial');
-  const hri=`(01)${gtin}(11)${prod}(17)${exp}(10)${lot}(21)${serial}`;
-  const raw=`01${gtin}11${prod}17${exp}10${lot}\u241D21${serial}`;
+  const level=val('level');
+  // 组装 UDI-PI（按 GS1 排序：日期在前，固定长度字段优先，可变长在后）
+  const ai=[];
+  const add=(code,value)=>{if(value!=='')ai.push({code,value});};
+  add('11',yymmdd(val('prod')));
+  add('17',yymmdd(val('exp')));
+  add('10',val('lot'));
+  add('21',val('serial'));
+  add('240',val('addid'));
+  add('250',val('secserial'));
+  add('02',val('inner'));
+  add('37',val('qty'));
+  add('422',val('country'));
+  add('414',val('gln'));
+  add('400',val('po'));
+  add('420',val('shipto'));
+  // HRI 人可读串：(AI)值
+  const hri='(01)'+gtin+ai.map(x=>`(${x.code})${x.value}`).join('');
+  // 底层数据串：定长 AI 直接连写，可变长 AI 以 FNC1(␝) 分隔
+  let raw='01'+gtin;
+  ai.forEach(x=>{
+    const isFixed=AI_FIXED[x.code]!==undefined&&AI_FIXED[x.code]>0;
+    raw+=x.code+x.value;
+    if(!isFixed)raw+='\u241D';
+  });
+  // GLN 校验（AI 414）：13 位末位为 Mod10 校验位
+  const gln=val('gln'),glnOK=/^\d{13}$/.test(gln)&&verifyGtin(gln);
   const segs=[
-    ['UDI-DI（设备标识）',gtin,'GTIN-14 = 前缀'+company+' + 参考'+itemref+' + 校验位<b>'+cd+'</b>'],
-    ['校验位（Mod 10）',String(cd),'按 GS1 校验算法计算：从左13位从右起 ×3/×1 交替求和'],
-    ['(01) GTIN-14',gtin,'UDI-DI 数据载体主标识'],
-    ['(11) 生产日期',prod,'YYMMDD 格式'],
-    ['(17) 失效日期',exp,'YYMMDD 格式'],
-    ['(10) 生产批号',lot,'批次追溯'],
-    ['(21) 序列号',serial,'单品唯一标识']
+    ['UDI-DI（设备标识）',gtin,'GTIN-14 = 前缀 '+company+' + 参考 '+itemref+' + 校验位 <b>'+cd+'</b>'],
+    ['(01) GTIN-14',gtin,'UDI-DI 主标识 · '+level+'（'+AI_DEF['01']+'）'],
+    ['(11) 生产日期',yymmdd(val('prod')),AI_DEF['11']+' · YYMMDD'],
+    ['(17) 失效日期',yymmdd(val('exp')),AI_DEF['17']+' · YYMMDD'],
+    ['(10) 生产批号',val('lot'),AI_DEF['10']+' · 批次追溯'],
+    ['(21) 序列号',val('serial')||'—',AI_DEF['21']+' · 单品唯一（高值耗材必填）']
   ];
+  ['240','250','02','37','422','414','400','420'].forEach(code=>{
+    const v=val(code==='240'?'addid':code==='250'?'secserial':code==='02'?'inner':code==='37'?'qty':code==='422'?'country':code==='414'?'gln':code==='400'?'po':'shipto');
+    if(v)segs.push([`(${code}) ${AI_DEF[code].split('（')[0]}`,v,AI_DEF[code]+(code==='414'?(glnOK?' · GLN 校验通过':' · <b style="color:#c62828">GLN 校验未通过</b>'):'')]);
+  });
   return {
     name:val('name')+' '+val('model'),industry:'医疗器械 UDI',udi:true,
-    code:hri,main:gtin,segs,aiLabel:'GS1 DataMatrix（HRI 人可读如上）',
+    code:hri,main:gtin,segs,aiLabel:'GS1 DataMatrix · '+level+' · '+ai.length+' 个 UDI-PI 数据项',
     raw,time:new Date().toLocaleString('zh-CN',{hour12:false}),
-    extra:{gtin,cd,checkOK:verifyGtin(gtin),exp,lot,serial}
+    extra:{gtin,cd,checkOK:verifyGtin(gtin),gln,glnOK,level,aiCount:ai.length,
+      hri,exp:yymmdd(val('exp')),lot:val('lot'),serial:val('serial')}
   };
 }
 
@@ -429,7 +495,14 @@ function renderResult(res){
   const rows=res.segs.map(s=>`<tr><th>${s[0]}</th><td class="code">${s[1]}<span class="verified ok">✓</span></td></tr>`).join('');
   let extra='';
   if(res.udi){
-    extra=`<div class="kv-mini" style="margin-top:12px">GS1 编码串（FNC1 分隔符以 ␝ 表示）：<br><b style="font-family:Consolas;word-break:break-all">${res.raw}</b></div>`;
+    const e=res.extra;
+    const checks=`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">
+      <span class="verified ${e.checkOK?'ok':'bad'}">GTIN 校验位 ${e.cd} ${e.checkOK?'✓':'✗'}</span>
+      <span class="verified ${e.glnOK?'ok':'bad'}">GLN 位置码 ${e.glnOK?'✓':'✗'}</span>
+      <span class="verified ok">${e.level}</span>
+      <span class="verified ok">${e.aiCount} 个 PI 数据项</span>
+    </div>`;
+    extra=`<div class="kv-mini" style="margin-top:12px">GS1 底层数据串（FNC1 分隔符以 ␝ 表示）：<br><b style="font-family:Consolas;word-break:break-all">${res.raw}</b>${checks}</div>`;
   }
   box.innerHTML=`
     <div class="code-box ${res.udi?'udi':''}">
@@ -498,7 +571,7 @@ function doQuery(){
   const rec=findRecord(q);
   if(!rec){
     out.innerHTML=`<div style="background:#fff3e0;border:1px solid #ffcc80;border-radius:8px;padding:14px;color:#8a4b00;font-size:13px">
-      未查询到该编码。演示可输入：<b>06901234567892</b>（UDI 的 GTIN-14）或 <b>HY-03-01-002-C:RD|S:XL-V1-K</b>（食品码）。</div>`;
+      未查询到该编码。演示可输入：<b>06901234567892</b>（注射器UDI）、<b>06901234567311</b>（支架UDI）、<b>06901234567076</b>（起搏器UDI）或 <b>HY-03-01-002-C:RD|S:XL-V1-K</b>（食品码）。</div>`;
     return;
   }
   const nodes=traceFor(rec);
@@ -541,8 +614,23 @@ function renderLib(){
 /* ============ 演示数据 ============ */
 const DEMO=[
   {name:'一次性使用无菌注射器 5mL 带针',industry:'医疗器械 UDI',udi:true,demo:true,time:'2026-11-18 09:12:00',
-   code:'(01)06901234567892(11)261118(17)291118(10)LOT261118(21)A00037',main:'06901234567892',
-   aliases:['06901234567892','6901234567892']},
+   code:'(01)06901234567892(11)261118(17)291118(10)LOT261118(21)A00037(422)156(414)0690123400018',
+   main:'06901234567892',aliases:['6901234567892']},
+  {name:'冠状动脉药物洗脱支架 2.75mm×18mm',industry:'医疗器械 UDI',udi:true,demo:true,time:'2026-09-16 08:40:00',
+   code:'(01)06901234567311(11)260915(17)290914(10)ST260915(21)S260915018(422)156(414)0690123400018',
+   main:'06901234567311',aliases:['6901234567311']},
+  {name:'植入式心脏起搏器 双腔',industry:'医疗器械 UDI',udi:true,demo:true,time:'2026-07-11 15:22:00',
+   code:'(01)06901234567076(11)260710(17)330709(10)PM260710(21)PM26A00193(250)PM26A00193-2(422)156',
+   main:'06901234567076',aliases:['6901234567076']},
+  {name:'骨科锁定加压接骨板 6孔',industry:'医疗器械 UDI',udi:true,demo:true,time:'2026-08-21 10:05:00',
+   code:'(01)06901234567458(11)260820(17)310819(10)OR260820(21)P26082006(37)1(422)156(414)0690123400018',
+   main:'06901234567458',aliases:['6901234567458']},
+  {name:'新型冠状病毒抗原检测试剂盒 20人份',industry:'医疗器械 UDI',udi:true,demo:true,time:'2026-11-19 09:30:00',
+   code:'(01)06901234567182(11)261118(17)271117(10)IVD261118(21)K26111801(02)06901234567892(37)20(422)156',
+   main:'06901234567182',aliases:['6901234567182']},
+  {name:'数字化医用X射线摄影系统 DR-800',industry:'医疗器械 UDI',udi:true,demo:true,time:'2026-10-06 14:18:00',
+   code:'(01)06901234567625(11)261005(17)361004(10)DR261005(21)DR26100501(400)PO20261006001(420)518000(422)156',
+   main:'06901234567625',aliases:['6901234567625']},
   {name:'纯净水 500G（食品演示）',industry:'食品饮料',udi:false,demo:true,time:'2026-11-15 14:30:00',
    code:'HY-03-01-002-C:RD|S:XL-V1-K',main:'HY261115A1X7K2M'},
   {name:'棉质圆领 T 恤 XL 红色（服装演示）',industry:'服装鞋帽',udi:false,demo:true,time:'2026-11-16 10:05:00',
