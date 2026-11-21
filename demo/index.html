@@ -35,6 +35,8 @@
   .tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
   .tab.udi{border-color:var(--udic);color:var(--udic)}
   .tab.udi.active{background:var(--udic);color:#fff}
+  .tab.gs1{border-color:var(--accent);color:#00695C}
+  .tab.gs1.active{background:var(--accent);color:#fff}
   .tab .u{font-size:11px;opacity:.85;margin-left:3px}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:600}
@@ -50,6 +52,22 @@
   .btn.sm{padding:8px 12px;font-size:12px;width:auto}
   .rule-note{background:#F5F8FD;border-left:3px solid var(--primary);padding:10px 12px;border-radius:0 6px 6px 0;font-size:12px;color:#455a72;margin-bottom:16px}
   .rule-note.udi{background:var(--udibg);border-left-color:var(--udic);color:#5b2c73}
+  .rule-note.gs1{background:#E8F5F3;border-left-color:var(--accent);color:#1b5e56}
+  .btn.gs1-btn{background:var(--accent)}
+  .btn.gs1-btn:hover{background:#00695C}
+  .gs1-desc{background:#f3faf9;border:1px solid #cfe9e4;border-radius:8px;padding:11px 13px;font-size:12.5px;color:#2f5c56;line-height:1.65}
+  .gs1-desc b{color:#00695C;font-size:13px}
+  .gs1-meta{color:#5a8a83;font-size:11.5px}
+  .gs1-catalog{margin-top:8px;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+  .gs1-catalog-t{background:#eef7f5;color:#1b5e56;font-weight:700;font-size:12.5px;padding:9px 12px;border-bottom:1px solid var(--line)}
+  .gs1-cat-table{width:100%;border-collapse:collapse;font-size:11.5px}
+  .gs1-cat-table th,.gs1-cat-table td{padding:6px 9px;text-align:left;border-bottom:1px solid var(--line)}
+  .gs1-cat-table th{background:#f7fbfa;color:var(--muted);font-weight:600}
+  .gs1-cat-table td b{color:#00695C}
+  .gs1-cat-table tr:hover td{background:#f7fbfa}
+  .code-box.gs1{background:#0b2b29;color:#d9f2ee}
+  .code-box.gs1 .lbl{color:#7fc5bb}
+  .seg-table.gs1 td.code{color:#00695C}
   .result-empty{text-align:center;color:#aab3bf;padding:46px 10px;font-size:13px}
   .code-box{background:#0f2038;color:#e8f1ff;border-radius:10px;padding:16px;font-family:Consolas,Monaco,monospace;word-break:break-all;font-size:15px;position:relative;letter-spacing:.5px}
   .code-box .lbl{font-family:"Microsoft YaHei",sans-serif;font-size:11px;color:#7fa8d8;letter-spacing:0;display:block;margin-bottom:6px}
@@ -185,7 +203,8 @@ function gs1CheckDigit(body){
   return (10 - (sum%10))%10;
 }
 function verifyGtin(gtin){
-  if(!/^\d{13,14}$/.test(gtin)) return false;
+  // GS1 定长数字键：GTIN-8/12/13/14、GLN-13、SSCC-18、GSRN-18、GRAI/GDTI 基本码
+  if(!/^(\d{8}|\d{12}|\d{13}|\d{14}|\d{18})$/.test(gtin)) return false;
   const body=gtin.slice(0,-1), cd=parseInt(gtin.slice(-1),10);
   return gs1CheckDigit(body)===cd;
 }
@@ -214,7 +233,8 @@ const TABS=[
   {id:'c3',label:'3C电子',udi:false},
   {id:'cosmetic',label:'化妆品',udi:false},
   {id:'apparel',label:'服装鞋帽',udi:false},
-  {id:'udi',label:'医疗器械 UDI',udi:true,u:'GS1'}
+  {id:'udi',label:'医疗器械 UDI',udi:true,u:'GS1'},
+  {id:'gs1',label:'GS1 编码体系',gs1:true,u:'11 类'}
 ];
 const FIELDS={
   food:[
@@ -277,7 +297,8 @@ const NOTES={
   c3:'3C 电子：以序列号 SN 单品管理，与保修/售后系统打通。扫码即可查保修状态与维修记录。',
   cosmetic:'化妆品：重点在防伪与防窜货，消费者扫码验真为主要触点，管理批次与限用日期。',
   apparel:'服装鞋帽：SKU 按「款-色-码」三维管理，同一款号下不同颜色/尺码是不同 SKU；UIN 单品码贯穿生产、吊牌、渠道与零售，防窜货与退换货溯源。',
-  udi:'医疗器械 UDI（GS1 标准）：UDI = UDI-DI（GTIN-14，AI 01）+ UDI-PI（AI 10/11/17/21/22…）+ 物流扩展（AI 37/400/414/420/422）。含 8 类器械预设、13 个应用标识符、GTIN/GLN 双 Mod10 校验。GS1 是中国 UDI 发证机构之一。'
+  udi:'医疗器械 UDI（GS1 标准）：UDI = UDI-DI（GTIN-14，AI 01）+ UDI-PI（AI 10/11/17/21/22…）+ 物流扩展（AI 37/400/414/420/422）。含 8 类器械预设、13 个应用标识符、GTIN/GLN 双 Mod10 校验。GS1 是中国 UDI 发证机构之一。',
+  gs1:'GS1 编码体系总览：11 类标准键与分类码。除 GIAI、CPID 外，所有定长数字键末位为 Mod10 校验位。GTIN 按长度分 8/12/13/14 四种；SSCC/GSRN 为 18 位；GPC 为无校验位的分类代码。选择类型查看对应结构与规则。'
 };
 
 /* ============ GS1 UDI 器械预设（切换自动填充）============ */
@@ -302,34 +323,154 @@ const AI_DEF={
 /* 定长 AI（无需 FNC1 分隔），其余为可变长需 ␝ 分隔 */
 const AI_FIXED={'01':14,'02':14,'11':6,'17':6,'22':2,'37':0,'414':13,'422':3};
 
+/* ============ GS1 编码体系（11 类标准键 + GPC 分类）============ */
+const GS1_TYPES=[
+  {id:'gtin8',name:'GTIN-8',cn:'小包装零售',digits:8,hasCD:true,
+   desc:'8 位全球贸易项目代码，用于小尺寸零售商品（口香糖、笔、小化妆品）。结构：7 位数据 + 1 位校验位。',
+   fields:[
+     {k:'prefix',l:'GS1 企业前缀',v:'690',h:'中国大陆 GTIN-8 前缀 690–695'},
+     {k:'item',l:'商品参考代码',v:'1234',h:'与前缀合计 7 位数字'}
+   ]},
+  {id:'gtin12',name:'GTIN-12 / UPC-A',cn:'北美零售',digits:12,hasCD:true,
+   desc:'12 位全球贸易项目代码，北美地区通用（UPC-A）。结构：11 位数据 + 1 位校验位。',
+   fields:[
+     {k:'prefix',l:'GS1 企业前缀',v:'036000',h:'北美企业前缀（示例）'},
+     {k:'item',l:'商品参考代码',v:'29145',h:'与前缀合计 11 位数字'}
+   ]},
+  {id:'gtin13',name:'GTIN-13 / EAN-13',cn:'全球零售',digits:13,hasCD:true,
+   desc:'13 位全球贸易项目代码，欧洲及全球零售通用。结构：12 位数据（含前缀）+ 1 位校验位。',
+   fields:[
+     {k:'prefix',l:'GS1 企业前缀',v:'6901234',h:'中国大陆前缀 690–699'},
+     {k:'item',l:'商品参考代码',v:'56789',h:'与前缀合计 12 位数字'}
+   ]},
+  {id:'gtin14',name:'GTIN-14 / ITF-14',cn:'箱与组合包装',digits:14,hasCD:true,
+   desc:'14 位全球贸易项目代码，用于箱、托盘等组合包装。首位为指示位（1–8），9 保留给变量度量商品。',
+   fields:[
+     {k:'indicator',l:'包装指示位',v:'1',type:'select',opts:['1 单箱','2 中包','3 运输箱','9 变量度量']},
+     {k:'prefix',l:'GS1 企业前缀',v:'6901234',h:'中国大陆前缀 690–699'},
+     {k:'item',l:'商品参考代码',v:'56789',h:'指示位(1)+前缀(7)+参考(5) 合计 13 位'}
+   ]},
+  {id:'sscc',name:'SSCC-18',cn:'物流单元',digits:18,hasCD:true,
+   desc:'18 位系列货运包装箱代码，标识托盘、整箱等物流单元。结构：扩展位(1) + 企业前缀 + 流水号 + 校验位。',
+   fields:[
+     {k:'ext',l:'扩展位',v:'0',h:'0–9，企业自定义分配'},
+     {k:'prefix',l:'GS1 企业前缀',v:'069012345',h:'与扩展位、流水合计 17 位'},
+     {k:'serial',l:'物流流水号',v:'0000123',h:'一箱一号，不重复'}
+   ]},
+  {id:'gln',name:'GLN-13',cn:'全球位置码',digits:13,hasCD:true,
+   desc:'13 位全球位置码，唯一标识企业、仓库、门店、部门等实体或功能位置。结构：12 位位置数据 + 1 位校验位。',
+   fields:[
+     {k:'prefix',l:'GS1 企业前缀',v:'06901234',h:'与目标位置所属企业一致'},
+     {k:'loc',l:'位置参考代码',v:'5678',h:'与前缀合计 12 位数字'}
+   ]},
+  {id:'grai',name:'GRAI',cn:'全球可回收资产',digits:14,hasCD:true,serial:true,
+   desc:'全球可回收资产标识，14 位基本码（13 位数据 + 校验位）+ 可选序列号（最多 16 位字符），用于周转箱、托盘、气瓶等。',
+   fields:[
+     {k:'prefix',l:'GS1 企业前缀',v:'06901234',h:'资产所有者前缀'},
+     {k:'asset',l:'资产参考代码',v:'56789',h:'前缀(8)+参考(5) 合计 13 位数字'},
+     {k:'gser',l:'序列号（可选）',v:'SN0001',h:'1–16 位字母数字，留空则仅基本码'}
+   ]},
+  {id:'giai',name:'GIAI',cn:'全球单个资产',digits:0,hasCD:false,
+   desc:'全球单个资产标识，前缀 + 资产参考（最长 30 字符）。GS1 规定 GIAI 无校验位，用于高价值单件资产。',
+   fields:[
+     {k:'prefix',l:'GS1 企业前缀',v:'0690123456',h:'资产所有者前缀'},
+     {k:'asset',l:'个体资产参考',v:'CT2026A001',h:'字母数字组合，整体不超过 30 字符'}
+   ]},
+  {id:'gdti',name:'GDTI',cn:'全球文件类型',digits:13,hasCD:true,serial:true,
+   desc:'全球文件类型标识，13 位基本码（12 位数据 + 校验位）+ 可选序列号（最多 17 位字符），用于保单、证书、工单。',
+   fields:[
+     {k:'prefix',l:'GS1 企业前缀',v:'06901234',h:'文件发行方前缀'},
+     {k:'doc',l:'文件类型参考',v:'5678',h:'前缀(8)+参考(4) 合计 12 位数字'},
+     {k:'gser',l:'文件序列号（可选）',v:'DOC2026001',h:'1–17 位字符，留空则仅基本码'}
+   ]},
+  {id:'gsrn',name:'GSRN-18',cn:'全球服务关系',digits:18,hasCD:true,
+   desc:'18 位全球服务关系码，标识服务提供方与接受方的关系（会员卡、员工卡、公交卡）。结构：17 位数据 + 1 位校验位。',
+   fields:[
+     {k:'prefix',l:'GS1 企业前缀',v:'069012345',h:'服务提供方前缀（9 位）'},
+     {k:'account',l:'服务账户参考',v:'00001234',h:'前缀(9)+账户(8) 合计 17 位数字'}
+   ]},
+  {id:'gpc',name:'GPC',cn:'全球产品分类',digits:16,hasCD:false,
+   desc:'全球产品分类代码，4 段各 4 位数字（Segment 分部 / Family 族 / Class 类 / Brick 砖），共 16 位。GPC 是分类体系而非 ID Key，无校验位，用于产品归类与数据同步。',
+   fields:[
+     {k:'segment',l:'Segment 分部',v:'1000',h:'4 位数字，如 1000 食品饮料'},
+     {k:'family',l:'Family 族',v:'1010',h:'4 位数字'},
+     {k:'class',l:'Class 类',v:'1011',h:'4 位数字'},
+     {k:'brick',l:'Brick 砖',v:'1012',h:'4 位数字'}
+   ]}
+];
+let gs1Type='gtin13';
+
+/* GS1 编码体系速查表（分类总览）*/
+const GS1_CATALOG=[
+  ['GTIN-8','8 位','零售小包装','7 数据 + 1 校验','EAN-8'],
+  ['GTIN-12','12 位','北美零售商品','11 数据 + 1 校验','UPC-A'],
+  ['GTIN-13','13 位','全球零售商品','12 数据 + 1 校验','EAN-13 / JAN'],
+  ['GTIN-14','14 位','箱 / 组合包装','1 指示位 + 12 数据 + 1 校验','ITF-14 / GS1-128'],
+  ['SSCC-18','18 位','物流单元（托盘/整箱）','1 扩展位 + 15 数据 + 1 校验','GS1-128'],
+  ['GLN-13','13 位','位置（企业/仓库/门店）','12 数据 + 1 校验','GS1-128 / DataMatrix'],
+  ['GRAI','14 位 + 可选 16 字符','可回收资产','13 数据 + 1 校验 + 序列号','GS1-128 / DataMatrix'],
+  ['GIAI','可变（≤30 字符）','单个资产','前缀 + 资产参考（无校验位）','GS1-128 / DataMatrix'],
+  ['GDTI','13 位 + 可选 17 字符','文件 / 保单 / 证书','12 数据 + 1 校验 + 序列号','GS1-128'],
+  ['GSRN-18','18 位','服务关系（会员/员工）','17 数据 + 1 校验','GS1-128'],
+  ['GPC','16 位','产品分类体系','4 段 × 4 位（无校验位）','数据库分类字段']
+];
+
 let current='food';
 let library=loadLib();
 
 /* ============ 初始化 ============ */
 function initTabs(){
   const t=document.getElementById('tabs');
-  t.innerHTML=TABS.map(x=>`<div class="tab ${x.udi?'udi':''} ${x.id===current?'active':''}" data-id="${x.id}">${x.label}${x.u?`<span class="u">${x.u}</span>`:''}</div>`).join('');
+  t.innerHTML=TABS.map(x=>`<div class="tab ${x.udi?'udi':''} ${x.gs1?'gs1':''} ${x.id===current?'active':''}" data-id="${x.id}">${x.label}${x.u?`<span class="u">${x.u}</span>`:''}</div>`).join('');
   t.querySelectorAll('.tab').forEach(el=>el.onclick=()=>{current=el.dataset.id;initTabs();renderForm();clearResult();});
 }
 function renderForm(){
   const note=document.getElementById('ruleNote');
   note.textContent=NOTES[current];
-  note.className='rule-note'+(current==='udi'?' udi':'');
-  const f=FIELDS[current];
-  let html='<div class="grid2">';
-  f.forEach(x=>{
-    let ctrl;
-    if(x.type==='select'||x.type==='device') ctrl=`<select id="f_${x.k}" ${x.type==='device'?'onchange="applyPreset(this.value)"':''}>${x.opts.map(o=>`<option ${o.startsWith(x.v)?'selected':''}>${o}</option>`).join('')}</select>`;
-    else ctrl=`<input id="f_${x.k}" type="${x.type||'text'}" value="${x.v}">`;
-    html+=`<div class="field"><label>${x.l}</label>${ctrl}${x.h?`<div class="hint">${x.h}</div>`:''}</div>`;
-  });
-  html+='</div>';
-  document.getElementById('form').innerHTML=html;
+  note.className='rule-note'+(current==='udi'?' udi':current==='gs1'?' gs1':'');
+  // GS1 编码体系：显示类型切换器 + 当前类型字段 + 规则速查表
+  if(current==='gs1'){
+    const t=GS1_TYPES.find(x=>x.id===gs1Type);
+    let html='<div class="field" style="grid-column:1/-1"><label>标准编码类型</label>'
+      +`<select id="gs1Type" onchange="switchGS1(this.value)">${GS1_TYPES.map(x=>`<option value="${x.id}" ${x.id===gs1Type?'selected':''}>${x.name} — ${x.cn}</option>`).join('')}</select></div>`;
+    html+=`<div class="gs1-desc" style="grid-column:1/-1"><b>${t.name} · ${t.cn}</b><br>${t.desc}<br><span class="gs1-meta">位数：${t.digits?t.digits+(t.serial?' + 可选序列号':''):'可变'} &nbsp;|&nbsp; 校验位：${t.hasCD?'Mod 10（末位）':'无'}</span></div>`;
+    html+='<div class="grid2" style="grid-column:1/-1">';
+    t.fields.forEach(x=>{
+      let ctrl;
+      if(x.type==='select') ctrl=`<select id="f_${x.k}">${x.opts.map(o=>`<option ${o.startsWith(x.v)?'selected':''}>${o}</option>`).join('')}</select>`;
+      else ctrl=`<input id="f_${x.k}" type="text" value="${x.v}">`;
+      html+=`<div class="field"><label>${x.l}</label>${ctrl}${x.h?`<div class="hint">${x.h}</div>`:''}</div>`;
+    });
+    html+='</div>';
+    // 规则速查表
+    html+=`<div class="gs1-catalog" style="grid-column:1/-1"><div class="gs1-catalog-t">GS1 编码体系分类速查（11 类）</div>`
+      +`<table class="gs1-cat-table"><thead><tr><th>代码</th><th>长度</th><th>用途</th><th>结构 / 校验</th></tr></thead><tbody>`
+      +GS1_CATALOG.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join('')
+      +`</tbody></table></div>`;
+    document.getElementById('form').innerHTML='<div class="grid2">'+html+'</div>';
+  }else{
+    const f=FIELDS[current];
+    let html='<div class="grid2">';
+    f.forEach(x=>{
+      let ctrl;
+      if(x.type==='select'||x.type==='device') ctrl=`<select id="f_${x.k}" ${x.type==='device'?'onchange="applyPreset(this.value)"':''}>${x.opts.map(o=>`<option ${o.startsWith(x.v)?'selected':''}>${o}</option>`).join('')}</select>`;
+      else ctrl=`<input id="f_${x.k}" type="${x.type||'text'}" value="${x.v}">`;
+      html+=`<div class="field"><label>${x.l}</label>${ctrl}${x.h?`<div class="hint">${x.h}</div>`:''}</div>`;
+    });
+    html+='</div>';
+    document.getElementById('form').innerHTML=html;
+  }
   const btn=document.getElementById('genBtn');
-  btn.className='btn'+(current==='udi'?' udi-btn':'');
-  btn.textContent=current==='udi'?'生成 UDI 编码（GS1）':'生成编码';
-  document.getElementById('resDot').style.background=current==='udi'?'var(--udic)':'var(--primary)';
-  document.getElementById('resTitle').textContent=current==='udi'?'UDI 生成结果（GS1）':'生成结果';
+  btn.className='btn'+(current==='udi'?' udi-btn':current==='gs1'?' gs1-btn':'');
+  btn.textContent=current==='udi'?'生成 UDI 编码（GS1）':current==='gs1'?'生成 '+GS1_TYPES.find(x=>x.id===gs1Type).name:'生成编码';
+  document.getElementById('resDot').style.background=current==='udi'?'var(--udic)':current==='gs1'?'var(--accent)':'var(--primary)';
+  document.getElementById('resTitle').textContent=current==='udi'?'UDI 生成结果（GS1）':current==='gs1'?'GS1 编码生成结果':'生成结果';
+}
+/* 切换 GS1 编码类型 */
+function switchGS1(id){
+  const t=GS1_TYPES.find(x=>x.id===id);if(!t)return;
+  gs1Type=id;
+  renderForm();clearResult();
 }
 function val(k){const e=document.getElementById('f_'+k);return e?e.value.trim():'';}
 function sel(k){return val(k).split(' ')[0];}
@@ -342,6 +483,7 @@ function applyPreset(name){
 
 /* ============ 生码 ============ */
 function makeCode(){
+  if(current==='gs1') return makeGS1();
   if(current==='udi') return makeUDI();
   if(current==='food') return makeFood();
   if(current==='c3') return makeC3();
@@ -411,6 +553,85 @@ function makeApparel(){
   ];
   return {...baseMeta('服装单品','服装鞋帽'),code:sku,main:uin,segs,aiLabel:'吊牌明码 + 加密二维码（示意）'};
 }
+/* ============ GS1 编码体系：通用生成 ============ */
+function makeGS1(){
+  const t=GS1_TYPES.find(x=>x.id===gs1Type);
+  const segs=[];
+  let body='',code='',cd='',checkOK=null;
+  if(t.id==='gtin14'){
+    // 指示位(1) + 前缀 + 参考 = 13 位数据
+    const ind=sel('indicator'),prefix=val('prefix'),item=val('item');
+    body=ind+prefix+item;
+    if(!/^\d{13}$/.test(body)){alert('GTIN-14 需指示位(1) + 前缀 + 参考代码合计 13 位数字');return null;}
+    cd=gs1CheckDigit(body);code=body+cd;checkOK=verifyGtin(code);
+    segs.push(['指示位 Indicator',ind,'1–8 表示包装层级，9 为变量度量商品']);
+    segs.push(['企业前缀',prefix,'GS1 分配给企业的前缀']);
+    segs.push(['商品参考代码',item,'企业自分配的品项代码']);
+    segs.push(['校验位',cd,'Mod 10 自动计算']);
+  }else if(t.id==='sscc'){
+    const ext=val('ext'),prefix=val('prefix'),serial=val('serial');
+    body=ext+prefix+serial;
+    if(!/^\d{17}$/.test(body)){alert('SSCC-18 需扩展位(1) + 前缀 + 流水号合计 17 位数字');return null;}
+    cd=gs1CheckDigit(body);code=body+cd;checkOK=verifyGtin(code);
+    segs.push(['扩展位 Extension',ext,'0–9，企业自定义，保证序列号唯一']);
+    segs.push(['企业前缀',prefix,'GS1 分配的前缀']);
+    segs.push(['序列号',serial,'物流单元流水号，一箱一号']);
+    segs.push(['校验位',cd,'Mod 10 自动计算']);
+  }else if(t.id==='giai'||t.id==='gpc'){
+    // 无校验位
+    if(t.id==='giai'){
+      const prefix=val('prefix'),asset=val('asset');
+      body=prefix+asset;code=body;
+      if(body.length>30){alert('GIAI 总长度不能超过 30 字符');return null;}
+      segs.push(['企业前缀',prefix,'资产所有者前缀']);
+      segs.push(['个体资产参考',asset,'企业自定义的资产编号']);
+      segs.push(['校验位','无','GS1 规定 GIAI 不含校验位']);
+    }else{
+      const s=val('segment'),f=val('family'),c=val('class'),b=val('brick');
+      if(![s,f,c,b].every(x=>/^\d{4}$/.test(x))){alert('GPC 四段均须为 4 位数字');return null;}
+      body=s+f+c+b;code=body;
+      segs.push(['Segment 分部',s,'GPC 第一层分类']);
+      segs.push(['Family 族',f,'GPC 第二层分类']);
+      segs.push(['Class 类',c,'GPC 第三层分类']);
+      segs.push(['Brick 砖',b,'GPC 第四层分类']);
+      segs.push(['校验位','无','GPC 为分类代码，不含校验位']);
+    }
+  }else if(t.id==='grai'||t.id==='gdti'){
+    // 定长基本码 + 可选序列号
+    const isGrai=t.id==='grai';
+    const prefix=val('prefix'),ref=isGrai?val('asset'):val('doc');
+    const dataLen=isGrai?13:12;
+    body=prefix+ref;
+    if(body.length!==dataLen||!/^\d+$/.test(body)){alert((isGrai?'GRAI':'GDTI')+' 基本码需 '+(dataLen+1)+' 位（'+dataLen+' 数据 + 1 校验），请检查前缀与参考代码位数');return null;}
+    cd=gs1CheckDigit(body);const base=body+cd;checkOK=verifyGtin(base);
+    const ser=val('gser');
+    code=ser?base+ser:base;
+    segs.push([isGrai?'资产类型前缀':'文件类型前缀',prefix,'GS1 企业前缀']);
+    segs.push([isGrai?'资产参考代码':'文件类型参考',ref,'企业自分配代码']);
+    segs.push(['校验位',cd,'Mod 10 自动计算（基本码末位）']);
+    if(ser)segs.push(['序列号',ser,'可选，'+(isGrai?'最多 16 位':'最多 17 位')+'字母数字']);
+  }else{
+    // GTIN-8/12/13、GLN、GSRN：前缀 + 参考 = digits-1 位数据
+    const dataLen=t.digits-1;
+    const prefix=val('prefix');
+    const refKey=t.id==='gln'?'loc':t.id==='gsrn'?'account':'item';
+    const ref=val(refKey);
+    body=prefix+ref;
+    if(body.length!==dataLen||!/^\d+$/.test(body)){alert(t.name+' 需 '+t.digits+' 位（'+dataLen+' 数据 + 1 校验），当前数据为 '+body.length+' 位，请检查前缀与参考代码');return null;}
+    cd=gs1CheckDigit(body);code=body+cd;checkOK=verifyGtin(code);
+    const labelMap={gtin8:'GTIN-8 数据',gtin12:'GTIN-12 数据',gtin13:'GTIN-13 数据',gln:'位置参考代码',gsrn:'服务账户参考'};
+    segs.push(['企业前缀',prefix,'GS1 分配的前缀']);
+    segs.push([labelMap[t.id]||'参考代码',ref,'企业自分配代码']);
+    segs.push(['校验位',cd,'Mod 10 自动计算']);
+  }
+  const extra={type:t.name,digits:t.digits,cd,checkOK,hasCD:t.hasCD,body};
+  return {
+    name:t.name+' · '+t.cn,industry:'GS1 编码体系',gs1:true,udi:false,
+    code,main:code,segs,aiLabel:t.name+' · '+t.cn+' · '+(t.hasCD?'含 Mod10 校验':'无校验位'),
+    raw:code,time:new Date().toLocaleString('zh-CN',{hour12:false}),extra
+  };
+}
+
 function makeUDI(){
   const company=val('company'),itemref=val('itemref'),body=company+itemref;
   if(!/^\d{13}$/.test(body)){
@@ -503,20 +724,28 @@ function renderResult(res){
       <span class="verified ok">${e.aiCount} 个 PI 数据项</span>
     </div>`;
     extra=`<div class="kv-mini" style="margin-top:12px">GS1 底层数据串（FNC1 分隔符以 ␝ 表示）：<br><b style="font-family:Consolas;word-break:break-all">${res.raw}</b>${checks}</div>`;
+  }else if(res.gs1){
+    const e=res.extra;
+    const cdBadge=e.hasCD
+      ?`<span class="verified ${e.checkOK?'ok':'bad'}">Mod 10 校验位 ${e.cd} ${e.checkOK?'通过':'失败'}</span>`
+      :`<span class="verified ok">该类编码无校验位</span>`;
+    const lenBadge=e.digits?`<span class="verified ok">${e.digits} 位标准长度</span>`:`<span class="verified ok">可变长度</span>`;
+    extra=`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:12px">${cdBadge}${lenBadge}<span class="verified ok">${e.type}</span></div>`;
   }
+  const cls=res.udi?'udi':res.gs1?'gs1':'';
   box.innerHTML=`
-    <div class="code-box ${res.udi?'udi':''}">
-      <span class="lbl">${res.udi?'完整 UDI（HRI 人可读）':'生成的编码'}</span>
+    <div class="code-box ${cls}">
+      <span class="lbl">${res.udi?'完整 UDI（HRI 人可读）':res.gs1?res.extra.type+' 编码':'生成的编码'}</span>
       <button class="copy-btn" id="cpBtn">复制</button>
       ${res.code}
     </div>
     <div class="canvas-wrap"><canvas id="mCanvas"></canvas></div>
     <div class="cap">${res.aiLabel} · 示意图，非真实可扫描码</div>
-    <table class="seg-table ${res.udi?'udi':''}"><tbody>${rows}</tbody></table>
+    <table class="seg-table ${cls}"><tbody>${rows}</tbody></table>
     ${extra}
     <button class="btn ghost" style="width:100%;margin-top:14px" id="toQuery">用此编码查询追溯 →</button>
   `;
-  drawMatrix(document.getElementById('mCanvas'),res.main,res.udi);
+  drawMatrix(document.getElementById('mCanvas'),res.main,res.udi||res.gs1);
   document.getElementById('cpBtn').onclick=()=>{copy(res.code);};
   document.getElementById('toQuery').onclick=()=>{document.getElementById('qInput').value=res.code;doQuery();};
 }
@@ -575,7 +804,7 @@ function doQuery(){
     return;
   }
   const nodes=traceFor(rec);
-  const badge=rec.udi?'<span class="pill udi">UDI 器械</span>':'<span class="pill ok">正品验证通过</span>';
+  const badge=rec.udi?'<span class="pill udi">UDI 器械</span>':rec.gs1?'<span class="pill ok">GS1 标准编码</span>':'<span class="pill ok">正品验证通过</span>';
   const warnNode=rec.udi?'<span class="pill ok">校验位通过 · GS1 合规</span>':'';
   const tl=nodes.map(n=>`<div class="node ${n.cur?'current':n.done?'done':''}">
       <div class="nt">${n.k}<span class="stage">${n.cur?'当前节点':n.done?'已完成':'待流转'}</span></div>
