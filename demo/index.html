@@ -37,6 +37,8 @@
   .tab.udi.active{background:var(--udic);color:#fff}
   .tab.gs1{border-color:var(--accent);color:#00695C}
   .tab.gs1.active{background:var(--accent);color:#fff}
+  .tab.gtin{border-color:#B8860B;color:#8a6500}
+  .tab.gtin.active{background:#B8860B;color:#fff}
   .tab .u{font-size:11px;opacity:.85;margin-left:3px}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px;font-weight:600}
@@ -53,15 +55,22 @@
   .rule-note{background:#F5F8FD;border-left:3px solid var(--primary);padding:10px 12px;border-radius:0 6px 6px 0;font-size:12px;color:#455a72;margin-bottom:16px}
   .rule-note.udi{background:var(--udibg);border-left-color:var(--udic);color:#5b2c73}
   .rule-note.gs1{background:#E8F5F3;border-left-color:var(--accent);color:#1b5e56}
+  .rule-note.gtin{background:#FFF8E1;border-left-color:#B8860B;color:#7a5c00}
   .btn.gs1-btn{background:var(--accent)}
   .btn.gs1-btn:hover{background:#00695C}
+  .btn.gtin-btn{background:#B8860B}
+  .btn.gtin-btn:hover{background:#9a7209}
+  .gs1-cat-table tr.gtin-hl td{background:#FFF6DA;font-weight:600}
+  .code-box.gtin{background:#2b2410;color:#fff3cf}
+  .code-box.gtin .lbl{color:#d9b95e}
+  .seg-table.gtin td.code{color:#8a6500}
   .gs1-desc{background:#f3faf9;border:1px solid #cfe9e4;border-radius:8px;padding:11px 13px;font-size:12.5px;color:#2f5c56;line-height:1.65}
   .gs1-desc b{color:#00695C;font-size:13px}
   .gs1-meta{color:#5a8a83;font-size:11.5px}
   .gs1-catalog{margin-top:8px;border:1px solid var(--line);border-radius:9px;overflow:hidden}
   .gs1-catalog-t{background:#eef7f5;color:#1b5e56;font-weight:700;font-size:12.5px;padding:9px 12px;border-bottom:1px solid var(--line)}
   .gs1-cat-table{width:100%;border-collapse:collapse;font-size:11.5px}
-  .gs1-cat-table th,.gs1-cat-table td{padding:6px 9px;text-align:left;border-bottom:1px solid var(--line)}
+  .gs1-cat-table th,.gs1-cat-table td{padding:6px 9px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
   .gs1-cat-table th{background:#f7fbfa;color:var(--muted);font-weight:600}
   .gs1-cat-table td b{color:#00695C}
   .gs1-cat-table tr:hover td{background:#f7fbfa}
@@ -73,14 +82,14 @@
   .ai-group-tabs{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
   .ai-g{background:#fff;border:1px solid var(--line);border-radius:6px;padding:5px 9px;cursor:pointer;font-size:11.5px;color:var(--muted)}
   .ai-g.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
-  .ai-list{border:1px solid var(--line);border-radius:8px;max-height:280px;overflow:auto;background:#fff}
-  .ai-item{display:flex;align-items:center;gap:8px;padding:6px 10px;border-bottom:1px solid #eef2f2;cursor:pointer;font-size:12px}
+  .ai-list{border:1px solid var(--line);border-radius:8px;max-height:330px;overflow:auto;background:#fff}
+  .ai-item{display:flex;align-items:center;gap:7px;padding:5px 10px;border-bottom:1px solid #eef2f2;cursor:pointer;font-size:12px;white-space:nowrap}
   .ai-item:hover{background:#f7fbfa}
   .ai-item.on{background:#eaf7f4}
-  .ai-item input{margin:0}
-  .ai-no{font-family:Consolas,monospace;font-weight:700;color:#00695C;min-width:38px}
-  .ai-nm{flex:1;color:#2c3a42}
-  .ai-fmt{font-family:Consolas,monospace;font-size:11px;color:#7a8b93}
+  .ai-item input[type=checkbox]{width:auto;flex:0 0 auto;margin:0;accent-color:var(--accent);cursor:pointer}
+  .ai-no{font-family:Consolas,monospace;font-weight:700;color:#00695C;flex:0 0 44px}
+  .ai-nm{flex:1;min-width:0;color:#2c3a42;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ai-fmt{font-family:Consolas,monospace;font-size:11px;color:#7a8b93;flex:0 0 auto;white-space:nowrap}
   .ai-inputs{margin-top:10px;border:1px solid #cfe9e4;border-radius:8px;padding:10px 12px;background:#f8fcfb}
   .ai-inputs-t{font-size:12px;font-weight:700;color:#00695C;margin-bottom:8px}
   .ai-empty{font-size:12px;color:#7a8b93;padding:8px 0}
@@ -88,7 +97,7 @@
   .ai-in-row>label{display:block;font-size:12px;font-weight:600;color:#2f5c56;margin-bottom:4px}
   .ai-in-ctrl{display:flex;gap:6px}
   .ai-in-ctrl input{flex:1}
-  .ai-in-ctrl input.ai-sx{flex:0 0 90px}
+  .ai-in-ctrl input.ai-sx{flex:0 0 74px}
   .ai-in-row .hint{margin-top:3px}
   .code-box.gs1{background:#0b2b29;color:#d9f2ee}
   .code-box.gs1 .lbl{color:#7fc5bb}
@@ -100,15 +109,26 @@
   .code-box.udi .lbl{color:#c79ade}
   .copy-btn{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff;padding:4px 10px;border-radius:5px;font-size:11px;cursor:pointer;font-family:"Microsoft YaHei",sans-serif}
   .seg-table{width:100%;border-collapse:collapse;margin-top:14px;font-size:12px}
-  .seg-table th,.seg-table td{border:1px solid var(--line);padding:7px 9px;text-align:left}
-  .seg-table th{background:#f7f9fc;color:var(--muted);font-weight:600;width:34%}
-  .seg-table td.code{font-family:Consolas,monospace;color:var(--primary);font-weight:600}
+  .seg-table th,.seg-table td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+  .seg-table th{background:#f7f9fc;color:var(--muted);font-weight:600;width:32%;white-space:nowrap}
+  .seg-table td.code{font-family:Consolas,monospace;color:var(--primary);font-weight:600;word-break:break-all}
   .seg-table.udi td.code{color:var(--udic)}
-  .verified{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:700;margin-left:8px}
+  .verified{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700;margin-left:6px;white-space:nowrap;vertical-align:middle}
   .verified.ok{background:#e8f5e9;color:var(--ok)}
   .verified.bad{background:#ffebee;color:var(--warn)}
   .canvas-wrap{display:flex;justify-content:center;margin:14px 0 4px}
   canvas{image-rendering:pixelated;border:1px solid var(--line);border-radius:6px;background:#fff}
+  canvas.ean{image-rendering:auto;max-width:100%;height:auto;border-radius:4px}
+  .gtin-steps{margin-top:12px;border:1px solid #e6d9a8;border-radius:8px;background:#fffdf5;padding:11px 12px;font-size:11.5px;color:#6b5a1e}
+  .gtin-steps-t{font-weight:700;color:#8a6500;font-size:12px;margin-bottom:9px}
+  .gtin-digit-row{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:9px;align-items:flex-end}
+  .gtin-digit-lbl{font-size:11px;color:#9aa5b1;align-self:center;margin-right:4px}
+  .gtin-digit{display:inline-flex;flex-direction:column;align-items:center;font-family:Consolas,monospace;font-size:14px;font-weight:700;color:#3a3020;background:#fff;border:1px solid #e6d9a8;border-radius:4px;padding:2px 5px;min-width:20px}
+  .gtin-digit i{font-style:normal;font-size:9px;color:#b09a4a;font-weight:400;margin-top:1px}
+  .gtin-digit.cdpos{background:#FFF0BF;border-color:#d8b84a}
+  .gtin-calc{padding:3px 0;line-height:1.7}
+  .gtin-calc b{font-family:Consolas,monospace;color:#5a4708}
+  .gtin-calc.hi{margin-top:6px;padding-top:8px;border-top:1px dashed #e6d9a8;color:#6b4f00}
   .cap{text-align:center;font-size:11px;color:#9aa5b1;margin-top:5px}
   /* query */
   .qbar{display:flex;gap:8px}
@@ -259,7 +279,8 @@ const TABS=[
   {id:'cosmetic',label:'化妆品',udi:false},
   {id:'apparel',label:'服装鞋帽',udi:false},
   {id:'udi',label:'医疗器械 UDI',udi:true,u:'GS1'},
-  {id:'gs1',label:'GS1 应用标识符',gs1:true,u:'GB/T 16986'}
+  {id:'gs1',label:'GS1 应用标识符',gs1:true,u:'GB/T 16986'},
+  {id:'gtin',label:'GTIN-13 商品条码',gtin:true,u:'GB 12904'}
 ];
 const FIELDS={
   food:[
@@ -296,6 +317,13 @@ const FIELDS={
     {k:'material',l:'材质',v:'COT',type:'select',opts:['COT 棉','POL 涤纶','WOL 羊毛','LEA 皮革']},
     {k:'date',l:'生产日期',v:'2026-11-20',type:'date'}
   ],
+  gtin:[
+    {k:'struct',l:'代码结构（表1 四种）',v:'结构一',type:'select',opts:['结构一','结构二','结构三','结构四']},
+    {k:'prefix',l:'前缀码（690–695）',v:'690',type:'select',opts:['690','691','692','693','694','695']},
+    {k:'company',l:'厂商代码',v:'1234',h:'厂商识别代码 = 前缀 3 位 + 本字段'},
+    {k:'item',l:'商品项目代码',v:'56789',h:'由厂商编制，位数随结构变化'},
+    {k:'name',l:'商品名称',v:'500mL 饮用纯净水'}
+  ],
   udi:[
     {k:'device',l:'器械类型（选择自动填充）',v:'一次性使用无菌注射器',type:'device',opts:['一次性使用无菌注射器','冠状动脉药物洗脱支架','骨科锁定接骨板','植入式心脏起搏器','数字化X射线摄影系统','体外诊断试剂（抗原检测）','医用外科口罩','一次性使用输液器']},
     {k:'name',l:'器械名称',v:'一次性使用无菌注射器'},
@@ -323,7 +351,29 @@ const NOTES={
   cosmetic:'化妆品：重点在防伪与防窜货，消费者扫码验真为主要触点，管理批次与限用日期。',
   apparel:'服装鞋帽：SKU 按「款-色-码」三维管理，同一款号下不同颜色/尺码是不同 SKU；UIN 单品码贯穿生产、吊牌、渠道与零售，防窜货与退换货溯源。',
   udi:'医疗器械 UDI（GS1 标准）：UDI = UDI-DI（GTIN-14，AI 01）+ UDI-PI（AI 10/11/17/21/22…）+ 物流扩展（AI 37/400/414/420/422）。含 8 类器械预设、13 个应用标识符、GTIN/GLN 双 Mod10 校验。GS1 是中国 UDI 发证机构之一。',
-  gs1:'GS1 应用标识符体系（依据 GB/T 16986-2018）：完整收录标准中全部 AI，按首位 0/1/2/3/4/7/8/9 分组。AI 与其数据编码共同构成应用标识；定长 AI 可直接拼接，变长 AI 后须加 FNC1 分隔符（演示中以 ␝ 表示）。支持多选组合生成 GS1-128 / GS1 DataMatrix 数据串。'
+  gs1:'GS1 应用标识符体系（依据 GB/T 16986-2018）：完整收录标准中全部 AI，按首位 0/1/2/3/4/7/8/9 分组。AI 与其数据编码共同构成应用标识；定长 AI 可直接拼接，变长 AI 后须加 FNC1 分隔符（演示中以 ␝ 表示）。支持多选组合生成 GS1-128 / GS1 DataMatrix 数据串。',
+  gtin:'GTIN-13 零售商品代码（依据 GB 12904-2008）：13 位代码由厂商识别代码、商品项目代码、校验码三部分组成，分四种结构。厂商识别代码前 3 位为前缀码（中国 690–695）。条码采用 EAN-13 符号（ISO/IEC 15420），含起始符、左侧数据符、中间分隔符、右侧数据符、校验符、结束符。'
+};
+
+/* ===== GTIN-13 代码结构（GB 12904-2008 表1）=====
+   厂商识别代码位数 + 商品项目代码位数 + 校验码 = 13
+   厂商识别代码 = 前缀码(3) + 厂商代码；前缀 690–695 */
+const GTIN_STRUCT={
+  '结构一':{man:7,comp:4,item:5,note:'厂商识别 7 位（前缀 3 + 厂商 4），商品项目 5 位'},
+  '结构二':{man:8,comp:5,item:4,note:'厂商识别 8 位（前缀 3 + 厂商 5），商品项目 4 位'},
+  '结构三':{man:9,comp:6,item:3,note:'厂商识别 9 位（前缀 3 + 厂商 6），商品项目 3 位'},
+  '结构四':{man:10,comp:7,item:2,note:'厂商识别 10 位（前缀 3 + 厂商 7），商品项目 2 位'}
+};
+/* EAN/UPC 条码字符集二进制表示（GB 12904-2008 表3）：1=条 0=空 */
+const EAN_SET={
+  A:['0001101','0011001','0010011','0111101','0100011','0110001','0101111','0111011','0110111','0001011'], // 奇排列
+  B:['0100111','0110011','0011011','0100001','0011101','0111001','0000101','0010001','0001001','0010111'], // 偶排列
+  C:['1110010','1100110','1101100','1000010','1011100','1001110','1010000','1000100','1001000','1110100']  // 右侧
+};
+/* 前置码决定左侧 6 位奇偶排列（GB 12904-2008 表4）字母对应 A=奇 B=偶 */
+const EAN_PARITY={
+  '0':'AAAAAA','1':'AABABB','2':'AABBAB','3':'AABBBA','4':'ABAABB',
+  '5':'ABBAAB','6':'ABBBAA','7':'ABABAB','8':'ABABBA','9':'ABBABA'
 };
 
 /* ============ GS1 UDI 器械预设（切换自动填充）============ */
@@ -485,7 +535,7 @@ function initTabs(){
 function renderForm(){
   const note=document.getElementById('ruleNote');
   note.textContent=NOTES[current];
-  note.className='rule-note'+(current==='udi'?' udi':current==='gs1'?' gs1':'');
+  note.className='rule-note'+(current==='udi'?' udi':current==='gs1'?' gs1':current==='gtin'?' gtin':'');
   // GS1 编码体系：显示类型切换器 + 当前类型字段 + 规则速查表
   if(current==='gs1'){
     let html='<div style="grid-column:1/-1">';
@@ -515,6 +565,26 @@ function renderForm(){
     });
     html+='</div></div>';
     document.getElementById('form').innerHTML='<div class="grid2">'+html+'</div>';
+  }else if(current==='gtin'){
+    const st=GTIN_STRUCT[val('struct')||'结构一'];
+    const f=FIELDS.gtin;
+    let html='<div class="grid2">';
+    f.forEach(x=>{
+      let ctrl;
+      if(x.type==='select') ctrl=`<select id="f_${x.k}" ${x.k==='struct'?'onchange="onGtinStruct(this.value)"':''}>${x.opts.map(o=>`<option ${o===x.v?'selected':''}>${o}</option>`).join('')}</select>`;
+      else ctrl=`<input id="f_${x.k}" type="text" value="${x.v}">`;
+      let hint=x.h||'';
+      if(x.k==='company') hint=`厂商识别代码 = 前缀 3 位 + 厂商 ${st.comp} 位（合计 ${st.man} 位），当前应填 ${st.comp} 位`;
+      if(x.k==='item') hint=`商品项目代码 ${st.item} 位（由厂商按 GB 12904 编制）`;
+      html+=`<div class="field"><label>${x.l}</label>${ctrl}<div class="hint">${hint}</div></div>`;
+    });
+    html+='</div>';
+    // 结构速查表（GB 12904 表1）
+    html+=`<div class="gs1-catalog" style="margin-top:4px"><div class="gs1-catalog-t">GB 12904-2008 表1 · 13 位代码四种结构</div>
+      <table class="gs1-cat-table"><thead><tr><th>结构</th><th>厂商识别代码</th><th>商品项目代码</th><th>校验码</th></tr></thead><tbody>
+      ${Object.keys(GTIN_STRUCT).map(k=>{const s=GTIN_STRUCT[k];return `<tr class="${k===(val('struct')||'结构一')?'gtin-hl':''}"><td><b>${k}</b></td><td>${s.man} 位（前缀 3 + 厂商 ${s.comp}）</td><td>${s.item} 位</td><td>1 位</td></tr>`;}).join('')}
+      </tbody></table></div>`;
+    document.getElementById('form').innerHTML=html;
   }else{
     const f=FIELDS[current];
     let html='<div class="grid2">';
@@ -528,10 +598,18 @@ function renderForm(){
     document.getElementById('form').innerHTML=html;
   }
   const btn=document.getElementById('genBtn');
-  btn.className='btn'+(current==='udi'?' udi-btn':current==='gs1'?' gs1-btn':'');
-  btn.textContent=current==='udi'?'生成 UDI 编码（GS1）':current==='gs1'?'生成 GS1 数据串':'生成编码';
-  document.getElementById('resDot').style.background=current==='udi'?'var(--udic)':current==='gs1'?'var(--accent)':'var(--primary)';
-  document.getElementById('resTitle').textContent=current==='udi'?'UDI 生成结果（GS1）':current==='gs1'?'GS1 编码生成结果':'生成结果';
+  btn.className='btn'+(current==='udi'?' udi-btn':current==='gs1'?' gs1-btn':current==='gtin'?' gtin-btn':'');
+  btn.textContent=current==='udi'?'生成 UDI 编码（GS1）':current==='gs1'?'生成 GS1 数据串':current==='gtin'?'生成 EAN-13 条码':'生成编码';
+  document.getElementById('resDot').style.background=current==='udi'?'var(--udic)':current==='gs1'?'var(--accent)':current==='gtin'?'#B8860B':'var(--primary)';
+  document.getElementById('resTitle').textContent=current==='udi'?'UDI 生成结果（GS1）':current==='gs1'?'GS1 编码生成结果':current==='gtin'?'EAN-13 条码生成结果（GB 12904）':'生成结果';
+}
+/* 切换 GTIN 结构时，按国标位数自动规整厂商代码与商品项目代码 */
+function onGtinStruct(name){
+  const s=GTIN_STRUCT[name];
+  const set=(k,n)=>{const el=document.getElementById('f_'+k);if(!el)return;let v=el.value.replace(/\D/g,'');v=v.slice(0,n);while(v.length<n)v='0'+v;el.value=v;};
+  const c=document.getElementById('f_company');if(c){c.value=(c.value||'').replace(/\D/g,'').slice(0,s.comp);}
+  const it=document.getElementById('f_item');if(it){it.value=(it.value||'').replace(/\D/g,'').slice(0,s.item);}
+  renderForm();
 }
 /* ===== GS1 应用标识符 交互 ===== */
 function switchAIGroup(id){aiGroup=id;renderForm();}
@@ -565,6 +643,7 @@ function applyPreset(name){
 
 /* ============ 生码 ============ */
 function makeCode(){
+  if(current==='gtin') return makeGTIN();
   if(current==='gs1') return makeAI();
   if(current==='udi') return makeUDI();
   if(current==='food') return makeFood();
@@ -640,6 +719,87 @@ function aiMaxLen(f){
   // 取格式中最大的字符数，如 n3+an..12 -> 15, n..20 -> 20, an..3 -> 3
   const nums=(f.match(/\d+/g)||[]).map(Number);
   return nums.length?Math.max.apply(null,nums):30;
+}
+/* ============ GTIN-13 零售商品代码（GB 12904-2008）============ */
+/* 附录B 校验码计算：位置序号从右至左（校验码为1）；偶数位求和×3 + 奇数位求和，取补数 */
+function gtinCheckSteps(body13){
+  // body13 = 12 位数据（厂商识别 + 商品项目），从右往左编号：最右为位置2，最左为位置13
+  const digits=body13.split('').reverse(); // digits[0] 对应位置2
+  let even=[],odd=[];
+  digits.forEach((d,i)=>{const pos=i+2;(pos%2===0?even:odd).push(Number(d));});
+  const sumE=even.reduce((a,b)=>a+b,0);
+  const mul=sumE*3;
+  const sumO=odd.reduce((a,b)=>a+b,0);
+  const total=mul+sumO;
+  const cd=(10-(total%10))%10;
+  return {even,odd,sumE,mul,sumO,total,cd,body13};
+}
+function makeGTIN(){
+  const struct=val('struct')||'结构一', prefix=val('prefix'), company=val('company'), item=val('item'), name=val('name');
+  const st=GTIN_STRUCT[struct];
+  if(!/^69[0-5]$/.test(prefix)){alert('前缀码须为 690–695（中国物品编码中心分配）');return null;}
+  if(!new RegExp('^\\d{'+st.comp+'}$').test(company)){alert(struct+'：厂商代码须为 '+st.comp+' 位数字');return null;}
+  if(!new RegExp('^\\d{'+st.item+'}$').test(item)){alert(struct+'：商品项目代码须为 '+st.item+' 位数字');return null;}
+  const body=prefix+company+item; // 12 位
+  if(body.length!==12){alert('代码位数错误：应为 12 位数据位');return null;}
+  const steps=gtinCheckSteps(body);
+  const code=body+steps.cd; // 13 位
+  // 结构分段
+  const segs=[
+    ['前缀码（'+prefix.slice(0,3)+'）',prefix,'厂商识别代码前 3 位 · 中国物品编码中心分配（690–695）'],
+    ['厂商代码',company,'厂商识别代码后 '+st.comp+' 位 · 由企业向编码中心申请'],
+    ['厂商识别代码',prefix+company,'共 '+st.man+' 位 = 前缀 3 + 厂商 '+st.comp],
+    ['商品项目代码',item,st.item+' 位 · 由厂商编制，无含义、唯一、稳定'],
+    ['校验码',String(steps.cd),'附录B：偶数位和×3 + 奇数位和 → 取 10 的补数']
+  ];
+  // 附录B 计算明细 HTML
+  const stepsHtml=`<div class="gtin-steps">
+    <div class="gtin-steps-t">GB 12904-2008 附录B · 校验码计算过程（示例：本码）</div>
+    <div class="gtin-digit-row"><span class="gtin-digit-lbl">代码（右→左）</span>${body.split('').reverse().map((d,i)=>`<span class="gtin-digit ${i===0?'cdpos':''}">${d}<i>${i+2}</i></span>`).join('')}<span class="gtin-digit cdpos">X₁<i>1</i></span></div>
+    <div class="gtin-calc">a) 偶数位（位置 2,4,…,12）求和：<b>${steps.even.join(' + ')} = ${steps.sumE}</b></div>
+    <div class="gtin-calc">b) 偶数位和 × 3：<b>${steps.sumE} × 3 = ${steps.mul}</b></div>
+    <div class="gtin-calc">c) 奇数位（位置 3,5,…,13）求和：<b>${steps.odd.join(' + ')} = ${steps.sumO}</b></div>
+    <div class="gtin-calc">d) 相加：<b>${steps.mul} + ${steps.sumO} = ${steps.total}</b></div>
+    <div class="gtin-calc hi">e) 校验码 = ${10-(steps.total%10)}（10 的补数）= <b>${steps.cd}</b>　→　完整代码 <b>${code}</b></div>
+  </div>`;
+  return {
+    name:name||'零售商品',industry:'GTIN-13 商品条码',gtin:true,udi:false,
+    code,main:code,segs,
+    aiLabel:'EAN-13 条码 · 依据 GB 12904-2008（ISO/IEC 15420）',
+    time:new Date().toLocaleString('zh-CN',{hour12:false}),
+    extra:{struct,prefix,cd:steps.cd,checkOK:true,stepsHtml,body}
+  };
+}
+/* 按 GB 12904-2008 表3/表4 绘制真实可扫描 EAN-13 条码 */
+function drawEAN13(canvas,code){
+  const d=code.split('').map(Number);
+  let bits='101'; // 起始符
+  const parity=EAN_PARITY[String(d[0])]; // 左侧 6 位奇偶排列
+  for(let i=1;i<=6;i++) bits+=EAN_SET[parity[i-1]][d[i]]; // 左侧数据符（6 位）
+  bits+='01010'; // 中间分隔符
+  for(let i=7;i<=12;i++) bits+=EAN_SET.C[d[i]]; // 右侧数据符 + 校验符（6 位，C 子集）
+  bits+='101'; // 结束符
+  const unit=3, quietL=11, quietR=7; // 模块宽 3px，左空白 11 模块，右空白 7 模块
+  const barTop=14, barH=76;
+  const w=(quietL+bits.length+quietR)*unit, h=barTop+barH+26;
+  canvas.width=w;canvas.height=h;
+  const ctx=canvas.getContext('2d');
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);
+  ctx.fillStyle='#000';
+  for(let i=0;i<bits.length;i++){
+    if(bits[i]==='1') ctx.fillRect((quietL+i)*unit,barTop,unit,barH);
+  }
+  // 供人识别字符（HRI）：首位在左外侧，1-6 位在左，7-12 位在右
+  ctx.fillStyle='#000';ctx.textAlign='center';ctx.textBaseline='top';ctx.font='bold 17px Consolas,monospace';
+  const x0=quietL*unit;
+  ctx.fillText(String(d[0]),x0-unit*3,barTop+barH+3);
+  for(let i=1;i<=6;i++){
+    const cx=x0+(3+(i-1)*7+3.5)*unit; ctx.fillText(String(d[i]),cx,barTop+barH+3);
+  }
+  for(let i=7;i<=12;i++){
+    const cx=x0+(45+(i-7)*7+3.5)*unit; ctx.fillText(String(d[i]),cx,barTop+barH+3);
+  }
+  return true;
 }
 function makeAI(){
   const entries=[];
@@ -789,22 +949,33 @@ function renderResult(res){
         <span class="verified ok">${e.varCount} 个变长 AI</span>
         <span class="verified ok">AI：${e.codes.join(' / ')}</span>
       </div></div>`;
-  }  const cls=res.udi?'udi':res.gs1?'gs1':'';
+  }else if(res.gtin){
+    extra=res.extra.stepsHtml+`<div class="kv-mini" style="margin-top:10px">
+      <span class="verified ok">校验码 ${res.extra.cd} 正确</span>
+      <span class="verified ok">${res.extra.struct} · 前缀 ${res.extra.prefix}</span>
+      <span class="verified ok">EAN-13 可扫描条码</span></div>`;
+  }
+  const cls=res.udi?'udi':res.gs1?'gs1':res.gtin?'gtin':'';
+  const lbl=res.udi?'完整 UDI（HRI 人可读）':res.gs1?'GS1 应用标识数据串（HRI）':res.gtin?'13 位零售商品代码':'生成的编码';
+  const cap=res.gtin?res.aiLabel+' · 真实可扫描条码（按国标表3/表4绘制）':res.aiLabel+' · 示意图，非真实可扫描码';
+  const qbtn=res.gtin?'':'<button class="btn ghost" style="width:100%;margin-top:14px" id="toQuery">用此编码查询追溯 →</button>';
   box.innerHTML=`
     <div class="code-box ${cls}">
-      <span class="lbl">${res.udi?'完整 UDI（HRI 人可读）':res.gs1?'GS1 应用标识数据串（HRI）':'生成的编码'}</span>
+      <span class="lbl">${lbl}</span>
       <button class="copy-btn" id="cpBtn">复制</button>
       ${res.code}
     </div>
-    <div class="canvas-wrap"><canvas id="mCanvas"></canvas></div>
-    <div class="cap">${res.aiLabel} · 示意图，非真实可扫描码</div>
+    <div class="canvas-wrap"><canvas id="mCanvas" class="${res.gtin?'ean':''}"></canvas></div>
+    <div class="cap">${cap}</div>
     <table class="seg-table ${cls}"><tbody>${rows}</tbody></table>
     ${extra}
-    <button class="btn ghost" style="width:100%;margin-top:14px" id="toQuery">用此编码查询追溯 →</button>
+    ${qbtn}
   `;
-  drawMatrix(document.getElementById('mCanvas'),res.main,res.udi||res.gs1);
+  if(res.gtin) drawEAN13(document.getElementById('mCanvas'),res.code);
+  else drawMatrix(document.getElementById('mCanvas'),res.main,res.udi||res.gs1);
   document.getElementById('cpBtn').onclick=()=>{copy(res.code);};
-  document.getElementById('toQuery').onclick=()=>{document.getElementById('qInput').value=res.code;doQuery();};
+  const tq=document.getElementById('toQuery');
+  if(tq) tq.onclick=()=>{document.getElementById('qInput').value=res.code;doQuery();};
 }
 function copy(t){
   if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>alert('已复制')).catch(()=>fallbackCopy(t));
@@ -861,8 +1032,8 @@ function doQuery(){
     return;
   }
   const nodes=traceFor(rec);
-  const badge=rec.udi?'<span class="pill udi">UDI 器械</span>':rec.gs1?'<span class="pill ok">GS1 应用标识</span>':'<span class="pill ok">正品验证通过</span>';
-  const warnNode=rec.udi?'<span class="pill ok">校验位通过 · GS1 合规</span>':'';
+  const badge=rec.udi?'<span class="pill udi">UDI 器械</span>':rec.gs1?'<span class="pill ok">GS1 应用标识</span>':rec.gtin?'<span class="pill" style="background:#FFF3CD;color:#8a6500">GTIN-13 商品条码</span>':'<span class="pill ok">正品验证通过</span>';
+  const warnNode=rec.udi?'<span class="pill ok">校验位通过 · GS1 合规</span>':rec.gtin?'<span class="pill ok">EAN-13 校验位通过 · GB 12904 合规</span>':'';
   const tl=nodes.map(n=>`<div class="node ${n.cur?'current':n.done?'done':''}">
       <div class="nt">${n.k}<span class="stage">${n.cur?'当前节点':n.done?'已完成':'待流转'}</span></div>
       <div class="nd">${n.done?`<b>时间</b> ${n.time} &nbsp;·&nbsp; <b>地点</b> ${n.loc} &nbsp;·&nbsp; <b>操作人</b> ${n.op} &nbsp;·&nbsp; ${n.desc}`:n.desc}</div>
@@ -899,6 +1070,8 @@ function renderLib(){
 
 /* ============ 演示数据 ============ */
 const DEMO=[
+  {name:'500mL 饮用纯净水（GB 12904 示例码）',industry:'GTIN-13 商品条码',gtin:true,demo:true,time:'2026-11-20 10:00:00',
+   code:'6901234567892',main:'6901234567892',aliases:['690123456789']},
   {name:'一次性使用无菌注射器 5mL 带针',industry:'医疗器械 UDI',udi:true,demo:true,time:'2026-11-18 09:12:00',
    code:'(01)06901234567892(11)261118(17)291118(10)LOT261118(21)A00037(422)156(414)0690123400018',
    main:'06901234567892',aliases:['6901234567892']},
